@@ -9,7 +9,6 @@ namespace TextEffects.Effects.Typewriter.DisplayTags
             OnUpdateText(textAnimationInfo, scriptInfo);
             for (var i = TagInfo.StartIndex; i < TagInfo.EndIndex; i++)
             {
-                var characterInfo = textAnimationInfo.TextInfo.characterInfo[i];
                 ref var characterAnimationInfo = ref textAnimationInfo.CharacterAnimationInfo[i];
                 if (!characterAnimationInfo.IsInitialized)
                     continue;
@@ -20,15 +19,15 @@ namespace TextEffects.Effects.Typewriter.DisplayTags
         }
 
         protected virtual void OnUpdateText(
-            TextAnimationInfo textAnimationInfo,
-            ScriptInfo scriptInfo
+            TextAnimationInfo textAnimationInfo, ScriptInfo scriptInfo
         )
         {
         }
 
-        protected abstract void UpdateCharacterInTag(
-            ref CharacterAnimationInfo animationInfo,
-            ref ScriptCharacterInfo scriptInfo
-        );
+        protected virtual void UpdateCharacterInTag(
+            ref CharacterAnimationInfo animationInfo, ref ScriptCharacterInfo scriptInfo
+        )
+        {
+        }
     }
 }

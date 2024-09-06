@@ -21,7 +21,8 @@ namespace TextEffects.Effects.Typewriter.DisplayTags
             ref CharacterAnimationInfo animationInfo,
             ref ScriptCharacterInfo scriptInfo)
         {
-            animationInfo.Quad += Vector3.Lerp(_offsets[animationInfo.CharacterIndex], Vector3.zero,
+            animationInfo.Quad += Vector3.Lerp(_offsets[animationInfo.CharacterIndex - TagInfo.StartIndex],
+                Vector3.zero,
                 scriptInfo.ShowProgress(_duration));
         }
     }
@@ -44,7 +45,8 @@ namespace TextEffects.Effects.Typewriter.DisplayTags
             ref CharacterAnimationInfo animationInfo,
             ref ScriptCharacterInfo scriptInfo)
         {
-            animationInfo.Quad += Vector3.Lerp(Vector3.zero, _offsets[animationInfo.CharacterIndex],
+            animationInfo.Quad += Vector3.Lerp(Vector3.zero,
+                _offsets[animationInfo.CharacterIndex - TagInfo.StartIndex],
                 scriptInfo.HideProgress(_duration));
         }
     }

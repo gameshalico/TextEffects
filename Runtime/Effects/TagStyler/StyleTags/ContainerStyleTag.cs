@@ -10,7 +10,7 @@ namespace TextEffects.Effects.TagStyler.StyleTags
             OnUpdateText(textAnimationInfo);
             for (var i = TagInfo.StartIndex; i < TagInfo.EndIndex; i++)
             {
-                var characterInfo = textAnimationInfo.TextInfo.characterInfo[i];
+                ref var characterInfo = ref textAnimationInfo.TextInfo.characterInfo[i];
                 ref var characterAnimationInfo = ref textAnimationInfo.CharacterAnimationInfo[i];
                 if (!characterAnimationInfo.IsInitialized)
                     continue;
@@ -20,12 +20,14 @@ namespace TextEffects.Effects.TagStyler.StyleTags
         }
 
         protected virtual void OnUpdateText(
-            TextAnimationInfo textAnimationInfo
-        )
+            TextAnimationInfo textAnimationInfo)
         {
         }
 
-        protected abstract void UpdateCharacterInTag(ref TMP_CharacterInfo characterInfo,
-            ref CharacterAnimationInfo animationInfo);
+        protected virtual void UpdateCharacterInTag(
+            ref TMP_CharacterInfo characterInfo,
+            ref CharacterAnimationInfo animationInfo)
+        {
+        }
     }
 }
