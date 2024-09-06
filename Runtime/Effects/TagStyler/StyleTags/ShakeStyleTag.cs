@@ -25,16 +25,13 @@ namespace TextEffects.Effects.TagStyler.StyleTags
         {
             for (var i = 0; i < _shakeOffsets.Length; i++)
                 _shakeOffsets[i] = Random.insideUnitCircle * _amplitude;
+            _lastShakeTime = Time.unscaledTime;
         }
 
         protected override void UpdateCharacterInTag(ref TMP_CharacterInfo characterInfo,
             ref CharacterAnimationInfo animationInfo)
         {
-            if (_delay > 0 && Time.unscaledTime - _lastShakeTime > _delay)
-            {
-                Shake();
-                _lastShakeTime = Time.unscaledTime;
-            }
+            if (_delay > 0 && Time.unscaledTime - _lastShakeTime > _delay) Shake();
 
             animationInfo.Quad += _shakeOffsets[animationInfo.CharacterIndex - StartIndex];
         }
