@@ -1,0 +1,14 @@
+﻿{
+  "name": "TextEffects.Editor.Tests",
+  "rootNamespace": "TextEffects.Editor.Tests",
+  "references": [
+    "TextEffects"
+  ],
+  "optionalUnityReferences": [
+    "TestAssemblies"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "excludePlatforms": []
+}
