@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 
 namespace TextEffects.Core
@@ -9,12 +10,14 @@ namespace TextEffects.Core
 
         public void AddFormatter(ITextFormatter formatter)
         {
+            InitializeIfNeeded();
             _textPreprocessor.AddFormatter(formatter);
             SetDirty();
         }
 
         public void RemoveFormatter(ITextFormatter formatter)
         {
+            InitializeIfNeeded();
             _textPreprocessor.RemoveFormatter(formatter);
             SetDirty();
         }
@@ -34,7 +37,7 @@ namespace TextEffects.Core
             public string PreprocessText(string text)
             {
                 var formattedText = text;
-                foreach (var formatter in _formatters)
+                foreach (var formatter in _formatters.OrderBy(f => f.FormatOrder))
                     formattedText = formatter.FormatText(formattedText);
 
                 var parseResults = TagParser.Parse(formattedText);

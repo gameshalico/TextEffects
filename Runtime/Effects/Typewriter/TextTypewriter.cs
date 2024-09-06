@@ -15,10 +15,9 @@ using Cysharp.Threading.Tasks;
 namespace TextEffects.Effects.Typewriter
 {
     [AddComponentMenu("")]
-    [RequireComponent(typeof(TextEffector))]
+    [AddEffectorFeatureMenu("Effects/Typewriter")]
     [DisallowMultipleComponent]
-    [ExecuteAlways]
-    public class TextTypewriter : MonoBehaviour
+    public class TextTypewriter : TextEffectorFeature
     {
         [SerializeField] private bool _autoPlay;
         [SerializeField] private float _defaultDelay = 0.01f;
@@ -26,7 +25,6 @@ namespace TextEffects.Effects.Typewriter
         private DefaultScriptModifier _defaultScriptModifier;
         private Action<TagEventData> _onEventTriggered;
         private TagEventDispatcherScriptListener _tagEventDispatcherScriptListener;
-        private TextEffector _textEffector;
         private TypewriterEffect _typewriterEffect;
 
         public bool AutoPlay
@@ -44,27 +42,27 @@ namespace TextEffects.Effects.Typewriter
                 if (_defaultScriptModifier != null)
                 {
                     _defaultScriptModifier.DefaultDelay = value;
-                    _textEffector.SetDirty();
+                    SetDirty();
                 }
             }
-        }
-
-        private void OnEnable()
-        {
-            InitializeIfNeeded();
-            _textEffector.AddEffect(_typewriterEffect);
-            _textEffector.AddEffect(_autoPlayEffect);
-        }
-
-        private void OnDisable()
-        {
-            _textEffector.RemoveEffect(_typewriterEffect);
-            _textEffector.RemoveEffect(_autoPlayEffect);
         }
 
         private void OnValidate()
         {
             if (_defaultScriptModifier != null) DefaultDelay = _defaultDelay;
+        }
+
+        protected override void AddFeature(TextEffector textEffector)
+        {
+            InitializeIfNeeded();
+            textEffector.AddEffect(_typewriterEffect);
+            textEffector.AddEffect(_autoPlayEffect);
+        }
+
+        protected override void RemoveFeature(TextEffector textEffector)
+        {
+            textEffector.RemoveEffect(_typewriterEffect);
+            textEffector.RemoveEffect(_autoPlayEffect);
         }
 
         public void SetDisplayTagFactory(IDisplayTagFactory displayTagFactory)
@@ -89,8 +87,8 @@ namespace TextEffects.Effects.Typewriter
         {
             if (!isActiveAndEnabled)
                 return;
-            _textEffector.TMPText.text = text;
-            _textEffector.TMPText.ForceMeshUpdate();
+            Effector.TMPText.text = text;
+            Effector.TMPText.ForceMeshUpdate();
             PlayScript();
         }
 
@@ -151,7 +149,6 @@ namespace TextEffects.Effects.Typewriter
             if (_typewriterEffect != null)
                 return;
 
-            _textEffector = GetComponent<TextEffector>();
             _typewriterEffect = new TypewriterEffect(DisplayTagFactoryMap.Default);
             _defaultScriptModifier = new DefaultScriptModifier(_defaultDelay);
             _tagEventDispatcherScriptListener = new TagEventDispatcherScriptListener();
@@ -183,8 +180,8 @@ namespace TextEffects.Effects.Typewriter
         {
             if (!isActiveAndEnabled)
                 return;
-            _textEffector.TMPText.text = text;
-            _textEffector.TMPText.ForceMeshUpdate();
+            Effector.TMPText.text = text;
+            Effector.TMPText.ForceMeshUpdate();
             await PlayScriptAsync(cancellationToken);
         }
 

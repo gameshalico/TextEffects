@@ -5,24 +5,18 @@ using UnityEngine;
 
 namespace TextEffects.Formatters
 {
-    [Serializable]
-    public struct TagReplacement
-    {
-        public string TagName;
-        public string OpeningTag;
-        public string ClosingTag;
-    }
-
-
     [CreateAssetMenu(fileName = "Tag Text Formatter", menuName = "TypeWriter/Text Formatter/Tag Text Formatter")]
-    public class TagReplaceFormatter : TextFormatterBase
+    public class TagReplaceFormatter : ScriptableFormatter
     {
         [SerializeField] private TagReplacement[] _replacements;
+
+        [SerializeField] private int _order;
         private Regex _cachedReplacementRegex;
         private IReadOnlyDictionary<string, string> _cachedReplacements;
         private bool _needToRefresh = true;
 
         private Action _onReplacementsChanged;
+        public override int FormatOrder => _order;
 
         private void OnValidate()
         {
@@ -58,6 +52,15 @@ namespace TextEffects.Formatters
             _cachedReplacements = replacements;
             _cachedReplacementRegex = new Regex(string.Join("|", replacements.Keys));
             _needToRefresh = false;
+        }
+
+
+        [Serializable]
+        public struct TagReplacement
+        {
+            public string TagName;
+            public string OpeningTag;
+            public string ClosingTag;
         }
     }
 }

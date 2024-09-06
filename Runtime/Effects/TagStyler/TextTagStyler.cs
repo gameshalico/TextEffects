@@ -5,29 +5,26 @@ namespace TextEffects.Effects.TagStyler
 {
     [AddComponentMenu("")]
     [AddEffectorFeatureMenu("Effects/Tag Styler")]
-    [RequireComponent(typeof(TextEffector))]
-    [ExecuteAlways]
-    public class TextTagStyler : MonoBehaviour
+    public class TextTagStyler : TextEffectorFeature
     {
-        private TextEffector _textEffector;
         private TextStyleEffect _textStyleEffect;
 
-        private void OnEnable()
+        protected override void AddFeature(TextEffector textEffector)
         {
             InitializeIfNeeded();
-            _textEffector.AddEffect(_textStyleEffect);
+            textEffector.AddEffect(_textStyleEffect);
         }
 
-        private void OnDisable()
+        protected override void RemoveFeature(TextEffector textEffector)
         {
-            _textEffector.RemoveEffect(_textStyleEffect);
+            textEffector.RemoveEffect(_textStyleEffect);
         }
 
         public void SetStyleTagFactory(IStyleTagFactory styleTagFactory)
         {
             InitializeIfNeeded();
             _textStyleEffect.StyleTagFactory = styleTagFactory;
-            _textEffector.SetDirty();
+            SetDirty();
         }
 
         private void InitializeIfNeeded()
@@ -35,7 +32,6 @@ namespace TextEffects.Effects.TagStyler
             if (_textStyleEffect != null)
                 return;
 
-            _textEffector = GetComponent<TextEffector>();
             _textStyleEffect = new TextStyleEffect(StyleTagFactoryMap.Default);
         }
     }
