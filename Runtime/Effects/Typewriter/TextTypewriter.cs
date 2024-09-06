@@ -14,6 +14,7 @@ using Cysharp.Threading.Tasks;
 
 namespace TextEffects.Effects.Typewriter
 {
+    [AddComponentMenu("")]
     [RequireComponent(typeof(TextEffector))]
     [DisallowMultipleComponent]
     [ExecuteAlways]
@@ -84,7 +85,7 @@ namespace TextEffects.Effects.Typewriter
             remove => _onEventTriggered -= value;
         }
 
-        public void Show(string text)
+        public void Play(string text)
         {
             if (!isActiveAndEnabled)
                 return;

@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using TMPro;
+﻿using TMPro;
 using UnityEngine;
 #if UNITY_EDITOR
 using UnityEditor;
@@ -12,7 +11,6 @@ namespace TextEffects.Core
     [RequireComponent(typeof(TMP_Text))]
     public partial class TextEffector : MonoBehaviour
     {
-        private readonly List<ITextFormatter> _formatters = new();
         private TextAnimationApplier _animationApplier;
         private TextAnimationHandler _animationHandler;
         private TextPreprocessor _textPreprocessor;

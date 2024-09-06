@@ -6,6 +6,8 @@ namespace TextEffects.Core
 {
     public partial class TextEffector
     {
+        public IReadOnlyCollection<ITextAnimationEffect> Effects => _animationHandler.Effects;
+
         public void AddEffect(ITextAnimationEffect effect)
         {
             InitializeIfNeeded();
@@ -27,6 +29,7 @@ namespace TextEffects.Core
             private TagInfo[] _tagInfos;
             private TagInfo[] _prevTagInfos;
             private bool _isReleased;
+            public IReadOnlyCollection<ITextAnimationEffect> Effects => _effects;
 
             public void Release()
             {

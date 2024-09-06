@@ -18,6 +18,7 @@ using System.Threading.Tasks;
 
 namespace TextEffects.Effects.Typewriter
 {
+    [AddEffectorFeatureMenu("Effects/Typewriter")]
     public class TypewriterEffect : ITextAnimationEffect
     {
         private readonly List<IScriptModifier> _modifiers;

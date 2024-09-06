@@ -4,6 +4,8 @@ using UnityEngine;
 
 namespace TextEffects.Formatters
 {
+    [AddComponentMenu("")]
+    [AddEffectorFeatureMenu("Formatter/Pre Formatter")]
     [RequireComponent(typeof(TextEffector))]
     [ExecuteAlways]
     public class TextPreFormatter : MonoBehaviour, ITextFormatter
@@ -14,6 +16,26 @@ namespace TextEffects.Formatters
         [TextArea] [SerializeField] private string _postText;
 
         private TextEffector _textEffector;
+
+        public string PreText
+        {
+            get => _preText;
+            set
+            {
+                _preText = value;
+                OnTextChanged();
+            }
+        }
+
+        public string PostText
+        {
+            get => _postText;
+            set
+            {
+                _postText = value;
+                OnTextChanged();
+            }
+        }
 
         private void Start()
         {
