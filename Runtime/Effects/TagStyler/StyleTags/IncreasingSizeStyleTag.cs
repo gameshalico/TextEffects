@@ -24,7 +24,6 @@ namespace TextEffects.Effects.TagStyler.StyleTags
                          _amplitude +
                          _amplitude / 2;
             animationInfo.ApplyMatrixOnCenter(Matrix4x4.Scale(new Vector3(1 + offset, 1 + offset, 1)));
-            ;
         }
     }
 }

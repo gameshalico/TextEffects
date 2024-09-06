@@ -45,6 +45,7 @@ namespace TextEffects.Data
 
     public readonly partial struct TagInfo : IEquatable<TagInfo>
     {
+        public bool IsValid => _handle.IsValid;
         private readonly PooledHandle<TagInfoBuffer> _handle;
 
         internal TagInfo(TagInfoBuffer handle)

@@ -63,12 +63,10 @@ namespace TextEffects.Effects.Typewriter
 #endif
         }
 
-        public void UpdateCharacter(ref TMP_CharacterInfo characterInfo, ref CharacterAnimationInfo animationInfo)
+        public void UpdateText(TextAnimationInfo textAnimationInfo)
         {
-            ref var scriptCharacterInfo = ref _scriptInfo.CharacterInfos[animationInfo.CharacterIndex];
-
             foreach (var tag in _displayTags)
-                tag.UpdateCharacter(ref characterInfo, ref animationInfo, ref scriptCharacterInfo);
+                tag.UpdateText(textAnimationInfo, _scriptInfo);
         }
 
         public void Release()
@@ -105,33 +103,33 @@ namespace TextEffects.Effects.Typewriter
 
         public void ShowAt(int index, bool skipAnimation = false)
         {
-            var scriptCharacterInfo = _scriptInfo.CharacterInfos[index];
+            var scriptCharacterInfo = _scriptInfo.ScriptCharacterInfo[index];
             if (scriptCharacterInfo.IsShown)
                 return;
 
             scriptCharacterInfo.Show(skipAnimation);
-            _scriptInfo.CharacterInfos[index] = scriptCharacterInfo;
+            _scriptInfo.ScriptCharacterInfo[index] = scriptCharacterInfo;
 
             foreach (var listener in _listeners) listener.OnCharacterShow(index);
         }
 
         public void HideAt(int index, bool skipAnimation = false)
         {
-            var scriptCharacterInfo = _scriptInfo.CharacterInfos[index];
+            var scriptCharacterInfo = _scriptInfo.ScriptCharacterInfo[index];
             if (scriptCharacterInfo.IsHidden)
                 return;
 
             scriptCharacterInfo.Hide(skipAnimation);
-            _scriptInfo.CharacterInfos[index] = scriptCharacterInfo;
+            _scriptInfo.ScriptCharacterInfo[index] = scriptCharacterInfo;
 
             foreach (var listener in _listeners) listener.OnCharacterHide(index);
         }
 
         public void ResetAt(int index)
         {
-            var scriptCharacterInfo = _scriptInfo.CharacterInfos[index];
+            var scriptCharacterInfo = _scriptInfo.ScriptCharacterInfo[index];
             scriptCharacterInfo.Reset();
-            _scriptInfo.CharacterInfos[index] = scriptCharacterInfo;
+            _scriptInfo.ScriptCharacterInfo[index] = scriptCharacterInfo;
         }
 
         public void ShowAll(bool skipAnimation = false)
@@ -183,7 +181,7 @@ namespace TextEffects.Effects.Typewriter
 
                 for (var i = 0; i < _charCount; i++)
                 {
-                    var scriptCharacterInfo = _scriptInfo.CharacterInfos[i];
+                    var scriptCharacterInfo = _scriptInfo.ScriptCharacterInfo[i];
                     if (scriptCharacterInfo.IsShown)
                         continue;
                     if (scriptCharacterInfo.Delay > 0)

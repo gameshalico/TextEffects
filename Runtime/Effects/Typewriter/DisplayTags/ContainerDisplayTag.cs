@@ -1,59 +1,32 @@
-﻿using System.Collections.Generic;
-using TextEffects.Data;
-using TMPro;
+﻿using TextEffects.Data;
 
 namespace TextEffects.Effects.Typewriter.DisplayTags
 {
     public abstract class ContainerDisplayTag<T> : PooledDisplayTag<T> where T : ContainerDisplayTag<T>, new()
     {
-        protected int StartIndex { get; private set; }
-        protected int EndIndex { get; private set; }
-
-        public sealed override void Setup(TMP_TextInfo textInfo, IReadOnlyCollection<TagInfo> tags)
+        public sealed override void UpdateText(TextAnimationInfo textAnimationInfo, ScriptInfo scriptInfo)
         {
-            OnSetup(textInfo, tags);
+            OnUpdateText(textAnimationInfo, scriptInfo);
+            for (var i = TagInfo.StartIndex; i < TagInfo.EndIndex; i++)
+            {
+                var characterInfo = textAnimationInfo.TextInfo.characterInfo[i];
+                ref var characterAnimationInfo = ref textAnimationInfo.CharacterAnimationInfo[i];
+                if (!characterAnimationInfo.IsInitialized)
+                    continue;
+                ref var scriptCharacterInfo = ref scriptInfo.ScriptCharacterInfo[i];
+
+                UpdateCharacterInTag(ref characterAnimationInfo, ref scriptCharacterInfo);
+            }
         }
 
-        public sealed override void UpdateCharacter(
-            ref TMP_CharacterInfo characterInfo,
-            ref CharacterAnimationInfo animationInfo,
-            ref ScriptCharacterInfo scriptInfo)
-        {
-            if (animationInfo.CharacterIndex < StartIndex || animationInfo.CharacterIndex >= EndIndex) return;
-
-            UpdateCharacterInTag(ref characterInfo, ref animationInfo, ref scriptInfo);
-        }
-
-        public sealed override void Release()
-        {
-            OnRelease();
-            StartIndex = 0;
-            EndIndex = 0;
-            Return(this as T);
-        }
-
-        public sealed override void SetTag(TagInfo tagInfo)
-        {
-            StartIndex = tagInfo.StartIndex;
-            EndIndex = tagInfo.EndIndex;
-            OnSetTag(tagInfo);
-        }
-
-
-        protected virtual void OnSetTag(TagInfo tagInfo)
-        {
-        }
-
-        protected virtual void OnSetup(TMP_TextInfo textInfo, IReadOnlyCollection<TagInfo> tags)
-        {
-        }
-
-        protected virtual void OnRelease()
+        protected virtual void OnUpdateText(
+            TextAnimationInfo textAnimationInfo,
+            ScriptInfo scriptInfo
+        )
         {
         }
 
         protected abstract void UpdateCharacterInTag(
-            ref TMP_CharacterInfo characterInfo,
             ref CharacterAnimationInfo animationInfo,
             ref ScriptCharacterInfo scriptInfo
         );

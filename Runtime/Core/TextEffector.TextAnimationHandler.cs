@@ -41,6 +41,15 @@ namespace TextEffects.Core
                 ReleasePrevTagInfos();
             }
 
+            public void UpdateText(TextAnimationInfo info)
+            {
+                if (_isReleased)
+                    return;
+
+                foreach (var effect in _effects)
+                    effect.UpdateText(info);
+            }
+
             public void Setup(TMP_TextInfo textInfo)
             {
                 _isReleased = false;
@@ -49,15 +58,6 @@ namespace TextEffects.Core
 
                 foreach (var effect in _effects)
                     effect.Setup(textInfo, _tagInfos);
-            }
-
-            public void UpdateCharacter(ref TMP_CharacterInfo characterInfo, ref CharacterAnimationInfo animationInfo)
-            {
-                if (_isReleased)
-                    return;
-
-                foreach (var effect in _effects)
-                    effect.UpdateCharacter(ref characterInfo, ref animationInfo);
             }
 
             private void ReleasePrevTagInfos()

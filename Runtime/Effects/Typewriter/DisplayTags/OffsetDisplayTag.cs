@@ -1,5 +1,4 @@
 ﻿using TextEffects.Data;
-using TMPro;
 using UnityEngine;
 
 namespace TextEffects.Effects.Typewriter.DisplayTags
@@ -15,7 +14,7 @@ namespace TextEffects.Effects.Typewriter.DisplayTags
             _offset = new Vector3(tagInfo.GetFloat("x"), tagInfo.GetFloat("y"));
         }
 
-        protected override void UpdateCharacterInTag(ref TMP_CharacterInfo characterInfo,
+        protected override void UpdateCharacterInTag(
             ref CharacterAnimationInfo animationInfo,
             ref ScriptCharacterInfo scriptInfo)
         {
@@ -34,7 +33,7 @@ namespace TextEffects.Effects.Typewriter.DisplayTags
             _offset = new Vector3(tagInfo.GetFloat("x"), tagInfo.GetFloat("y"));
         }
 
-        protected override void UpdateCharacterInTag(ref TMP_CharacterInfo characterInfo,
+        protected override void UpdateCharacterInTag(
             ref CharacterAnimationInfo animationInfo,
             ref ScriptCharacterInfo scriptInfo)
         {

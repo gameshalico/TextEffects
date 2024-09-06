@@ -27,7 +27,7 @@ namespace TextEffects.Effects.TagStyler.StyleTags
         {
             var offset = Mathf.Sin(Time.unscaledTime * _frequency + animationInfo.CharacterIndex * _charStep) *
                          _amplitude;
-            animationInfo.Quad += _directions[animationInfo.CharacterIndex - StartIndex] * offset;
+            animationInfo.Quad += _directions[animationInfo.CharacterIndex - TagInfo.StartIndex] * offset;
         }
     }
 }

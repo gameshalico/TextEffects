@@ -7,7 +7,7 @@ namespace TextEffects.Core
     public interface ITextAnimationEffect
     {
         public void Setup(TMP_TextInfo textInfo, IReadOnlyCollection<TagInfo> tags);
-        public void UpdateCharacter(ref TMP_CharacterInfo characterInfo, ref CharacterAnimationInfo animationInfo);
+        void UpdateText(TextAnimationInfo textAnimationInfo);
         public void Release();
     }
 }

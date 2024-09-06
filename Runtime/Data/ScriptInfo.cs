@@ -4,20 +4,20 @@
     {
         public ScriptInfo(int charCount)
         {
-            CharacterInfos = new ScriptCharacterInfo[charCount];
+            ScriptCharacterInfo = new ScriptCharacterInfo[charCount];
             for (var i = 0; i < charCount; i++)
             {
-                CharacterInfos[i] = new ScriptCharacterInfo
+                ScriptCharacterInfo[i] = new ScriptCharacterInfo
                 {
                     CharacterIndex = i,
                     Delay = 0f
                 };
-                CharacterInfos[i].Reset();
+                ScriptCharacterInfo[i].Reset();
             }
         }
 
         public float LastDelay { get; set; }
 
-        public ScriptCharacterInfo[] CharacterInfos { get; }
+        public ScriptCharacterInfo[] ScriptCharacterInfo { get; }
     }
 }

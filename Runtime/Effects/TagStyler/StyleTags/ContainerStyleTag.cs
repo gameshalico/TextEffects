@@ -1,52 +1,27 @@
-﻿using System.Collections.Generic;
-using TextEffects.Data;
+﻿using TextEffects.Data;
 using TMPro;
 
 namespace TextEffects.Effects.TagStyler.StyleTags
 {
     public abstract class ContainerStyleTag<T> : PooledStyleTag<T> where T : ContainerStyleTag<T>, new()
     {
-        protected int StartIndex { get; private set; }
-        protected int EndIndex { get; private set; }
-
-        public override void Setup(TMP_TextInfo textInfo, IReadOnlyCollection<TagInfo> tags)
+        public override void UpdateText(TextAnimationInfo textAnimationInfo)
         {
-            OnSetup(textInfo, tags);
+            OnUpdateText(textAnimationInfo);
+            for (var i = TagInfo.StartIndex; i < TagInfo.EndIndex; i++)
+            {
+                var characterInfo = textAnimationInfo.TextInfo.characterInfo[i];
+                ref var characterAnimationInfo = ref textAnimationInfo.CharacterAnimationInfo[i];
+                if (!characterAnimationInfo.IsInitialized)
+                    continue;
+
+                UpdateCharacterInTag(ref characterInfo, ref characterAnimationInfo);
+            }
         }
 
-        public override void UpdateCharacter(ref TMP_CharacterInfo characterInfo,
-            ref CharacterAnimationInfo animationInfo)
-        {
-            if (animationInfo.CharacterIndex < StartIndex || animationInfo.CharacterIndex >= EndIndex) return;
-
-            UpdateCharacterInTag(ref characterInfo, ref animationInfo);
-        }
-
-
-        public override void Release()
-        {
-            OnRelease();
-            StartIndex = 0;
-            EndIndex = 0;
-            Return(this as T);
-        }
-
-        public override void SetTag(TagInfo tagInfo)
-        {
-            StartIndex = tagInfo.StartIndex;
-            EndIndex = tagInfo.EndIndex;
-            OnSetTag(tagInfo);
-        }
-
-        protected virtual void OnSetTag(TagInfo tagInfo)
-        {
-        }
-
-        protected virtual void OnSetup(TMP_TextInfo textInfo, IReadOnlyCollection<TagInfo> tags)
-        {
-        }
-
-        protected virtual void OnRelease()
+        protected virtual void OnUpdateText(
+            TextAnimationInfo textAnimationInfo
+        )
         {
         }
 

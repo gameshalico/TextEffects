@@ -12,15 +12,16 @@ namespace TextEffects.Effects.Typewriter.Modifiers
             foreach (var tag in tags.Where(tag => tag.TagName == "dr" || tag.TagName == "delay-rate"))
             {
                 var delayRate = tag.GetFloat("", 1.0f);
-                if (tag.StartIndex >= scriptInfo.CharacterInfos.Length) continue;
+                if (tag.StartIndex >= scriptInfo.ScriptCharacterInfo.Length) continue;
 
                 if (tag.IsEmptyTag)
                 {
-                    scriptInfo.CharacterInfos[tag.StartIndex].Delay *= delayRate;
+                    scriptInfo.ScriptCharacterInfo[tag.StartIndex].Delay *= delayRate;
                     continue;
                 }
 
-                for (var i = tag.StartIndex; i < tag.EndIndex; i++) scriptInfo.CharacterInfos[i].Delay *= delayRate;
+                for (var i = tag.StartIndex; i < tag.EndIndex; i++)
+                    scriptInfo.ScriptCharacterInfo[i].Delay *= delayRate;
             }
 
             // delay
@@ -30,13 +31,13 @@ namespace TextEffects.Effects.Typewriter.Modifiers
 
                 if (tag.IsEmptyTag)
                 {
-                    if (tag.StartIndex >= scriptInfo.CharacterInfos.Length) scriptInfo.LastDelay += delay;
+                    if (tag.StartIndex >= scriptInfo.ScriptCharacterInfo.Length) scriptInfo.LastDelay += delay;
                     else
-                        scriptInfo.CharacterInfos[tag.StartIndex].Delay += delay;
+                        scriptInfo.ScriptCharacterInfo[tag.StartIndex].Delay += delay;
                     continue;
                 }
 
-                for (var i = tag.StartIndex; i < tag.EndIndex; i++) scriptInfo.CharacterInfos[i].Delay += delay;
+                for (var i = tag.StartIndex; i < tag.EndIndex; i++) scriptInfo.ScriptCharacterInfo[i].Delay += delay;
             }
         }
     }

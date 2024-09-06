@@ -1,5 +1,4 @@
 ﻿using TextEffects.Data;
-using TMPro;
 
 namespace TextEffects.Effects.Typewriter.DisplayTags
 {
@@ -12,7 +11,7 @@ namespace TextEffects.Effects.Typewriter.DisplayTags
             _duration = tagInfo.GetFloat("d", 0.1f);
         }
 
-        protected override void UpdateCharacterInTag(ref TMP_CharacterInfo characterInfo,
+        protected override void UpdateCharacterInTag(
             ref CharacterAnimationInfo animationInfo,
             ref ScriptCharacterInfo scriptInfo)
         {
@@ -33,7 +32,7 @@ namespace TextEffects.Effects.Typewriter.DisplayTags
             _duration = tagInfo.GetFloat("d", 0.1f);
         }
 
-        protected override void UpdateCharacterInTag(ref TMP_CharacterInfo characterInfo,
+        protected override void UpdateCharacterInTag(
             ref CharacterAnimationInfo animationInfo,
             ref ScriptCharacterInfo scriptInfo)
         {

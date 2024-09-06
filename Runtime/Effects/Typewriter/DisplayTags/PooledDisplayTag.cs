@@ -7,23 +7,34 @@ namespace TextEffects.Effects.Typewriter.DisplayTags
 {
     public abstract class PooledDisplayTag<T> : PooledItem<T>, IDisplayTag where T : PooledDisplayTag<T>, new()
     {
+        protected TagInfo TagInfo { get; private set; }
+
         public virtual void Setup(TMP_TextInfo textInfo, IReadOnlyCollection<TagInfo> tags)
         {
         }
 
-        public virtual void UpdateCharacter(
-            ref TMP_CharacterInfo characterInfo,
-            ref CharacterAnimationInfo animationInfo,
-            ref ScriptCharacterInfo scriptInfo
-        )
+        public virtual void UpdateText(TextAnimationInfo textAnimationInfo, ScriptInfo scriptInfo)
         {
         }
 
-        public virtual void Release()
+        public void Release()
+        {
+            OnRelease();
+            Return(this as T);
+        }
+
+        private void SetTag(TagInfo tagInfo)
+        {
+            TagInfo = tagInfo;
+            OnSetTag(tagInfo);
+        }
+
+
+        protected virtual void OnSetTag(TagInfo tagInfo)
         {
         }
 
-        public virtual void SetTag(TagInfo tagInfo)
+        protected virtual void OnRelease()
         {
         }
 

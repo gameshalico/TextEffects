@@ -9,7 +9,7 @@ namespace TextEffects.Core
         private readonly ITextAnimationHandler _handler;
 
         private TMP_MeshInfo[] _cachedMeshInfos;
-        private CharacterAnimationInfo[] _animationInfos;
+        private TextAnimationInfo _animationInfo;
 
         private bool _isPlaying;
 
@@ -28,7 +28,11 @@ namespace TextEffects.Core
 
             var characterCount = textInfo.characterCount;
             _cachedMeshInfos = textInfo.CopyMeshInfoVertexData();
-            _animationInfos = new CharacterAnimationInfo[characterCount];
+            _animationInfo = new TextAnimationInfo
+            {
+                TextInfo = textInfo,
+                CharacterAnimationInfo = new CharacterAnimationInfo[characterCount]
+            };
 
             UpdateTextInfo(textInfo);
         }
@@ -41,12 +45,15 @@ namespace TextEffects.Core
             if (_tmpText.textInfo.characterCount == 0)
                 return;
             UpdateTextInfo(_tmpText.textInfo);
-            _tmpText.UpdateVertexData(TMP_VertexDataUpdateFlags.All);
+            _tmpText.UpdateVertexData(TMP_VertexDataUpdateFlags.Vertices | TMP_VertexDataUpdateFlags.Colors32);
         }
 
         private void UpdateTextInfo(TMP_TextInfo textInfo)
         {
             var characterCount = textInfo.characterCount;
+            if (_animationInfo.CharacterAnimationInfo.Length != characterCount)
+                return;
+
             for (var characterIndex = 0; characterIndex < characterCount; characterIndex++)
             {
                 ref var characterInfo = ref textInfo.characterInfo[characterIndex];
@@ -62,12 +69,9 @@ namespace TextEffects.Core
                 var sourceVertices = cachedMeshInfo.vertices;
                 var sourceColors = cachedMeshInfo.colors32;
 
-                var destVertices = meshInfo.vertices;
-                var destColors = meshInfo.colors32;
-
                 // Initialize character animation state
-                if (_animationInfos[characterIndex].IsInitialized == false)
-                    _animationInfos[characterIndex] = new CharacterAnimationInfo
+                if (_animationInfo.CharacterAnimationInfo[characterIndex].IsInitialized == false)
+                    _animationInfo.CharacterAnimationInfo[characterIndex] = new CharacterAnimationInfo
                     {
                         IsInitialized = true,
                         CharacterIndex = characterIndex,
@@ -78,17 +82,38 @@ namespace TextEffects.Core
                     };
 
                 // Update character animation state
-                _animationInfos[characterIndex].Quad = _animationInfos[characterIndex].BaseQuad;
-                _animationInfos[characterIndex].Color = _animationInfos[characterIndex].BaseColor;
+                _animationInfo.CharacterAnimationInfo[characterIndex].Quad =
+                    _animationInfo.CharacterAnimationInfo[characterIndex].BaseQuad;
+                _animationInfo.CharacterAnimationInfo[characterIndex].Color =
+                    _animationInfo.CharacterAnimationInfo[characterIndex].BaseColor;
+            }
 
-                _handler.UpdateCharacter(ref characterInfo, ref _animationInfos[characterIndex]);
+            _handler.UpdateText(_animationInfo);
 
-                // Apply animation state
-                for (var i = 0; i < 4; i++)
-                    destColors[vertexIndex + i] = _animationInfos[characterIndex].Color[i];
+            // Apply animation state
+            for (var characterIndex = 0; characterIndex < characterCount; characterIndex++)
+            {
+                ref var characterInfo = ref textInfo.characterInfo[characterIndex];
+                if (!characterInfo.isVisible) continue;
 
-                for (var i = 0; i < 4; i++)
-                    destVertices[vertexIndex + i] = _animationInfos[characterIndex].Quad[i];
+                var vertexIndex = characterInfo.vertexIndex;
+                var materialIndex = characterInfo.materialReferenceIndex;
+
+                var meshInfo = textInfo.meshInfo[materialIndex];
+                var animationInfo = _animationInfo.CharacterAnimationInfo[characterIndex];
+
+                var destVertices = meshInfo.vertices;
+                var destColors = meshInfo.colors32;
+
+                destVertices[vertexIndex + 0] = animationInfo.Quad.BottomLeft;
+                destVertices[vertexIndex + 1] = animationInfo.Quad.TopLeft;
+                destVertices[vertexIndex + 2] = animationInfo.Quad.TopRight;
+                destVertices[vertexIndex + 3] = animationInfo.Quad.BottomRight;
+
+                destColors[vertexIndex + 0] = animationInfo.Color.BottomLeft;
+                destColors[vertexIndex + 1] = animationInfo.Color.TopLeft;
+                destColors[vertexIndex + 2] = animationInfo.Color.TopRight;
+                destColors[vertexIndex + 3] = animationInfo.Color.BottomRight;
             }
         }
     }
