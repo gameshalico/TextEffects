@@ -14,7 +14,7 @@ namespace TextEffects.Effects.Typewriter
         {
         }
 
-        public void OnScriptModify(ScriptInfo scriptInfo)
+        public void OnScriptModify(ScriptTextInfo scriptInfo)
         {
         }
 

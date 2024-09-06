@@ -18,7 +18,7 @@ namespace TextEffects.Effects.TagStyler.StyleTags
         }
 
         protected override void UpdateCharacterInTag(ref TMP_CharacterInfo characterInfo,
-            ref CharacterAnimationInfo animationInfo)
+            ref AnimationCharacterInfo animationInfo)
         {
             var offset = Mathf.Sin(Time.unscaledTime * _frequency + animationInfo.CharacterIndex * _charStep) *
                          _amplitude;

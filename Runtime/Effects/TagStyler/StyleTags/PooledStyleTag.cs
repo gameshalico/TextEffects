@@ -13,7 +13,7 @@ namespace TextEffects.Effects.TagStyler.StyleTags
         {
         }
 
-        public virtual void UpdateText(TextAnimationInfo textAnimationInfo)
+        public virtual void UpdateText(AnimationTextInfo animationInfo)
         {
         }
 

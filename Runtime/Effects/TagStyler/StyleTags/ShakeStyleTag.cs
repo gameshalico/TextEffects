@@ -28,13 +28,13 @@ namespace TextEffects.Effects.TagStyler.StyleTags
             _lastShakeTime = Time.unscaledTime;
         }
 
-        protected override void OnUpdateText(TextAnimationInfo textAnimationInfo)
+        protected override void OnUpdateText(AnimationTextInfo animationInfo)
         {
             if (_delay > 0 && Time.unscaledTime - _lastShakeTime > _delay) Shake();
         }
 
         protected override void UpdateCharacterInTag(ref TMP_CharacterInfo characterInfo,
-            ref CharacterAnimationInfo animationInfo)
+            ref AnimationCharacterInfo animationInfo)
         {
             animationInfo.Quad += _shakeOffsets[animationInfo.CharacterIndex - TagInfo.StartIndex];
         }

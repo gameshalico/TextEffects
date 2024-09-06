@@ -24,7 +24,7 @@ namespace TextEffects.Effects.Typewriter
         private readonly List<IScriptListener> _listeners;
         private IDisplayTag[] _displayTags;
         private int _charCount;
-        private ScriptInfo _scriptInfo;
+        private ScriptTextInfo _scriptInfo;
         private CancellationTokenSource _playCts;
 
         public TypewriterEffect(IDisplayTagFactory displayTagFactory)
@@ -44,7 +44,7 @@ namespace TextEffects.Effects.Typewriter
             foreach (var listener in _listeners) listener.OnSetup(textInfo, tags);
 
             _charCount = textInfo.characterCount;
-            _scriptInfo = new ScriptInfo(_charCount);
+            _scriptInfo = new ScriptTextInfo(_charCount);
 
             foreach (var modifier in _modifiers) modifier.ModifyScript(tags, _scriptInfo);
             foreach (var listener in _listeners) listener.OnScriptModify(_scriptInfo);
@@ -63,10 +63,10 @@ namespace TextEffects.Effects.Typewriter
 #endif
         }
 
-        public void UpdateText(TextAnimationInfo textAnimationInfo)
+        public void UpdateText(AnimationTextInfo animationInfo)
         {
             foreach (var tag in _displayTags)
-                tag.UpdateText(textAnimationInfo, _scriptInfo);
+                tag.UpdateText(animationInfo, _scriptInfo);
         }
 
         public void Release()

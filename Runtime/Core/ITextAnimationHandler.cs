@@ -5,7 +5,7 @@ namespace TextEffects.Core
 {
     internal interface ITextAnimationHandler
     {
-        void UpdateText(TextAnimationInfo textAnimationInfo);
+        void UpdateText(AnimationTextInfo animationInfo);
         void Setup(TMP_TextInfo textInfo);
         void Release();
     }

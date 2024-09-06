@@ -1,8 +1,8 @@
 ﻿namespace TextEffects.Data
 {
-    public class ScriptInfo
+    public class ScriptTextInfo
     {
-        public ScriptInfo(int charCount)
+        public ScriptTextInfo(int charCount)
         {
             ScriptCharacterInfo = new ScriptCharacterInfo[charCount];
             for (var i = 0; i < charCount; i++)

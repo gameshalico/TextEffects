@@ -41,7 +41,7 @@ namespace TextEffects.Core
                 ReleasePrevTagInfos();
             }
 
-            public void UpdateText(TextAnimationInfo info)
+            public void UpdateText(AnimationTextInfo info)
             {
                 if (_isReleased)
                     return;

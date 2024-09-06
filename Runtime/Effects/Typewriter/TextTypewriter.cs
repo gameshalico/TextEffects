@@ -204,7 +204,7 @@ namespace TextEffects.Effects.Typewriter
                 _owner.PlayScript();
             }
 
-            public void UpdateText(TextAnimationInfo textAnimationInfo)
+            public void UpdateText(AnimationTextInfo animationInfo)
             {
             }
 

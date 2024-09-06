@@ -2,7 +2,7 @@
 
 namespace TextEffects.Data
 {
-    public struct CharacterAnimationInfo
+    public struct AnimationCharacterInfo
     {
         public bool IsInitialized { get; init; }
 

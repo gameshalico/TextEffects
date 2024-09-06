@@ -12,7 +12,7 @@ namespace TextEffects.Effects.Typewriter.Modifiers
 
         public float DefaultDelay { get; set; }
 
-        public void ModifyScript(IReadOnlyCollection<TagInfo> tags, ScriptInfo scriptInfo)
+        public void ModifyScript(IReadOnlyCollection<TagInfo> tags, ScriptTextInfo scriptInfo)
         {
             for (var i = 0; i < scriptInfo.ScriptCharacterInfo.Length; i++)
                 scriptInfo.ScriptCharacterInfo[i].Delay = DefaultDelay;

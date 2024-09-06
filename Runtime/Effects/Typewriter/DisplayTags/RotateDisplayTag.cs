@@ -15,7 +15,7 @@ namespace TextEffects.Effects.Typewriter.DisplayTags
         }
 
         protected override void UpdateCharacterInTag(
-            ref CharacterAnimationInfo animationInfo,
+            ref AnimationCharacterInfo animationInfo,
             ref ScriptCharacterInfo scriptInfo)
         {
             animationInfo.ApplyMatrixOnCenter(
@@ -36,7 +36,7 @@ namespace TextEffects.Effects.Typewriter.DisplayTags
         }
 
         protected override void UpdateCharacterInTag(
-            ref CharacterAnimationInfo animationInfo,
+            ref AnimationCharacterInfo animationInfo,
             ref ScriptCharacterInfo scriptInfo)
         {
             animationInfo.ApplyMatrixOnCenter(

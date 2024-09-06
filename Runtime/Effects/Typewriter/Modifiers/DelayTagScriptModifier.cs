@@ -6,7 +6,7 @@ namespace TextEffects.Effects.Typewriter.Modifiers
 {
     public class DelayTagScriptModifier : IScriptModifier
     {
-        public void ModifyScript(IReadOnlyCollection<TagInfo> tags, ScriptInfo scriptInfo)
+        public void ModifyScript(IReadOnlyCollection<TagInfo> tags, ScriptTextInfo scriptInfo)
         {
             // delay rate
             foreach (var tag in tags.Where(tag => tag.TagName == "dr" || tag.TagName == "delay-rate"))

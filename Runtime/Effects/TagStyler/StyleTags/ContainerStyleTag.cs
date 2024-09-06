@@ -5,13 +5,13 @@ namespace TextEffects.Effects.TagStyler.StyleTags
 {
     public abstract class ContainerStyleTag<T> : PooledStyleTag<T> where T : ContainerStyleTag<T>, new()
     {
-        public override void UpdateText(TextAnimationInfo textAnimationInfo)
+        public override void UpdateText(AnimationTextInfo animationInfo)
         {
-            OnUpdateText(textAnimationInfo);
+            OnUpdateText(animationInfo);
             for (var i = TagInfo.StartIndex; i < TagInfo.EndIndex; i++)
             {
-                ref var characterInfo = ref textAnimationInfo.TextInfo.characterInfo[i];
-                ref var characterAnimationInfo = ref textAnimationInfo.CharacterAnimationInfo[i];
+                ref var characterInfo = ref animationInfo.TextInfo.characterInfo[i];
+                ref var characterAnimationInfo = ref animationInfo.AnimationCharacterInfo[i];
                 if (!characterAnimationInfo.IsInitialized)
                     continue;
 
@@ -20,13 +20,13 @@ namespace TextEffects.Effects.TagStyler.StyleTags
         }
 
         protected virtual void OnUpdateText(
-            TextAnimationInfo textAnimationInfo)
+            AnimationTextInfo animationInfo)
         {
         }
 
         protected virtual void UpdateCharacterInTag(
             ref TMP_CharacterInfo characterInfo,
-            ref CharacterAnimationInfo animationInfo)
+            ref AnimationCharacterInfo animationInfo)
         {
         }
     }

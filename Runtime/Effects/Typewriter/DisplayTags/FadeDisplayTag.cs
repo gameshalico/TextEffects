@@ -12,7 +12,7 @@ namespace TextEffects.Effects.Typewriter.DisplayTags
         }
 
         protected override void UpdateCharacterInTag(
-            ref CharacterAnimationInfo animationInfo,
+            ref AnimationCharacterInfo animationInfo,
             ref ScriptCharacterInfo scriptInfo)
         {
             animationInfo.Color = VertexColor.Lerp(
@@ -33,7 +33,7 @@ namespace TextEffects.Effects.Typewriter.DisplayTags
         }
 
         protected override void UpdateCharacterInTag(
-            ref CharacterAnimationInfo animationInfo,
+            ref AnimationCharacterInfo animationInfo,
             ref ScriptCharacterInfo scriptInfo)
         {
             animationInfo.Color = VertexColor.Lerp(

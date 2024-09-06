@@ -9,7 +9,7 @@ namespace TextEffects.Core
         private readonly ITextAnimationHandler _handler;
 
         private TMP_MeshInfo[] _cachedMeshInfos;
-        private TextAnimationInfo _animationInfo;
+        private AnimationTextInfo _animationInfo;
 
         private bool _isPlaying;
 
@@ -28,10 +28,10 @@ namespace TextEffects.Core
 
             var characterCount = textInfo.characterCount;
             _cachedMeshInfos = textInfo.CopyMeshInfoVertexData();
-            _animationInfo = new TextAnimationInfo
+            _animationInfo = new AnimationTextInfo
             {
                 TextInfo = textInfo,
-                CharacterAnimationInfo = new CharacterAnimationInfo[characterCount]
+                AnimationCharacterInfo = new AnimationCharacterInfo[characterCount]
             };
 
             UpdateTextInfo(textInfo);
@@ -51,7 +51,7 @@ namespace TextEffects.Core
         private void UpdateTextInfo(TMP_TextInfo textInfo)
         {
             var characterCount = textInfo.characterCount;
-            if (_animationInfo.CharacterAnimationInfo.Length != characterCount)
+            if (_animationInfo.AnimationCharacterInfo.Length != characterCount)
                 return;
 
             for (var characterIndex = 0; characterIndex < characterCount; characterIndex++)
@@ -70,8 +70,8 @@ namespace TextEffects.Core
                 var sourceColors = cachedMeshInfo.colors32;
 
                 // Initialize character animation state
-                if (_animationInfo.CharacterAnimationInfo[characterIndex].IsInitialized == false)
-                    _animationInfo.CharacterAnimationInfo[characterIndex] = new CharacterAnimationInfo
+                if (_animationInfo.AnimationCharacterInfo[characterIndex].IsInitialized == false)
+                    _animationInfo.AnimationCharacterInfo[characterIndex] = new AnimationCharacterInfo
                     {
                         IsInitialized = true,
                         CharacterIndex = characterIndex,
@@ -82,10 +82,10 @@ namespace TextEffects.Core
                     };
 
                 // Update character animation state
-                _animationInfo.CharacterAnimationInfo[characterIndex].Quad =
-                    _animationInfo.CharacterAnimationInfo[characterIndex].BaseQuad;
-                _animationInfo.CharacterAnimationInfo[characterIndex].Color =
-                    _animationInfo.CharacterAnimationInfo[characterIndex].BaseColor;
+                _animationInfo.AnimationCharacterInfo[characterIndex].Quad =
+                    _animationInfo.AnimationCharacterInfo[characterIndex].BaseQuad;
+                _animationInfo.AnimationCharacterInfo[characterIndex].Color =
+                    _animationInfo.AnimationCharacterInfo[characterIndex].BaseColor;
             }
 
             _handler.UpdateText(_animationInfo);
@@ -100,7 +100,7 @@ namespace TextEffects.Core
                 var materialIndex = characterInfo.materialReferenceIndex;
 
                 var meshInfo = textInfo.meshInfo[materialIndex];
-                var animationInfo = _animationInfo.CharacterAnimationInfo[characterIndex];
+                var animationInfo = _animationInfo.AnimationCharacterInfo[characterIndex];
 
                 var destVertices = meshInfo.vertices;
                 var destColors = meshInfo.colors32;

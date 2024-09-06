@@ -13,7 +13,7 @@ namespace TextEffects.Effects.Typewriter.DisplayTags
         {
         }
 
-        public virtual void UpdateText(TextAnimationInfo textAnimationInfo, ScriptInfo scriptInfo)
+        public virtual void UpdateText(AnimationTextInfo animationInfo, ScriptTextInfo scriptInfo)
         {
         }
 

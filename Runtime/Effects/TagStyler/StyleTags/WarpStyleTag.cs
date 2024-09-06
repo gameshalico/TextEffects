@@ -28,13 +28,13 @@ namespace TextEffects.Effects.TagStyler.StyleTags
             _lastWarpTime = Time.unscaledTime;
         }
 
-        protected override void OnUpdateText(TextAnimationInfo textAnimationInfo)
+        protected override void OnUpdateText(AnimationTextInfo animationInfo)
         {
             if (_delay > 0 && Time.unscaledTime - _lastWarpTime > _delay) Warp();
         }
 
         protected override void UpdateCharacterInTag(ref TMP_CharacterInfo characterInfo,
-            ref CharacterAnimationInfo animationInfo)
+            ref AnimationCharacterInfo animationInfo)
         {
             animationInfo.Quad += _offsets[animationInfo.CharacterIndex - TagInfo.StartIndex];
         }

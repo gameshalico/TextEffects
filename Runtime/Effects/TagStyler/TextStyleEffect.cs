@@ -31,13 +31,13 @@ namespace TextEffects.Effects.TagStyler
                 tag.Setup(textInfo, tags);
         }
 
-        public void UpdateText(TextAnimationInfo textAnimationInfo)
+        public void UpdateText(AnimationTextInfo animationInfo)
         {
             if (_styleTags == null)
                 return;
 
             foreach (var tag in _styleTags)
-                tag.UpdateText(textAnimationInfo);
+                tag.UpdateText(animationInfo);
         }
 
         public void Release()
@@ -50,7 +50,7 @@ namespace TextEffects.Effects.TagStyler
             _styleTags = null;
         }
 
-        public void UpdateText(TMP_TextInfo textInfo, CharacterAnimationInfo[] animationInfo)
+        public void UpdateText(TMP_TextInfo textInfo, AnimationCharacterInfo[] animationInfo)
         {
         }
     }

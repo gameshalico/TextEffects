@@ -5,6 +5,6 @@ namespace TextEffects.Effects.Typewriter
 {
     public interface IScriptModifier
     {
-        void ModifyScript(IReadOnlyCollection<TagInfo> tags, ScriptInfo scriptInfo);
+        void ModifyScript(IReadOnlyCollection<TagInfo> tags, ScriptTextInfo scriptInfo);
     }
 }

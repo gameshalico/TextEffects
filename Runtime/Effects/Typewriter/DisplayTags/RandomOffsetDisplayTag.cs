@@ -18,7 +18,7 @@ namespace TextEffects.Effects.Typewriter.DisplayTags
 
 
         protected override void UpdateCharacterInTag(
-            ref CharacterAnimationInfo animationInfo,
+            ref AnimationCharacterInfo animationInfo,
             ref ScriptCharacterInfo scriptInfo)
         {
             animationInfo.Quad += Vector3.Lerp(_offsets[animationInfo.CharacterIndex - TagInfo.StartIndex],
@@ -42,7 +42,7 @@ namespace TextEffects.Effects.Typewriter.DisplayTags
 
 
         protected override void UpdateCharacterInTag(
-            ref CharacterAnimationInfo animationInfo,
+            ref AnimationCharacterInfo animationInfo,
             ref ScriptCharacterInfo scriptInfo)
         {
             animationInfo.Quad += Vector3.Lerp(Vector3.zero,
