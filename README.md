@@ -11,7 +11,7 @@ Text Effects は、Unityのテキスト(TMP)に対して、
 3. 以下のURLを入力する
 
 ```
-https://github.com/gameshalico/TextEffects.git
+https://github.com/gameshalico/TextEffects.git#1.0.0
 ```
 
 ## スタートガイド
