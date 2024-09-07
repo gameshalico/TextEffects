@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace TextEffects.Formatters
 {
-    [AddComponentMenu("Text Effects/Scriptable Formatter")]
+    [AddComponentMenu("Text Effects/Text Scriptable Formatter")]
     [AddEffectorFeatureMenu("Formatters/Scriptable Object Formatter")]
     public class TextScriptableObjectFormatter : FormatterEffectorFeature
     {

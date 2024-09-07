@@ -2,7 +2,6 @@
 
 namespace TextEffects.Core
 {
-    [AddComponentMenu("")]
     [RequireComponent(typeof(TextEffector))]
     [ExecuteAlways]
     public abstract class TextEffectorFeature : MonoBehaviour

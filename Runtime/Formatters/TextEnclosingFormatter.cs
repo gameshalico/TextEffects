@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace TextEffects.Formatters
 {
-    [AddComponentMenu("Text Effects/Enclosing Formatter")]
+    [AddComponentMenu("Text Effects/Text Enclosing Formatter")]
     [AddEffectorFeatureMenu("Formatters/Enclosing Formatter")]
     public class TextEnclosingFormatter : FormatterEffectorFeature
     {

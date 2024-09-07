@@ -14,7 +14,7 @@ using Cysharp.Threading.Tasks;
 
 namespace TextEffects.Effects.Typewriter
 {
-    [AddComponentMenu("Text Effects/Typewriter")]
+    [AddComponentMenu("Text Effects/Text Typewriter")]
     [AddEffectorFeatureMenu("Effects/Typewriter")]
     [DisallowMultipleComponent]
     public class TextTypewriter : TextEffectorFeature
