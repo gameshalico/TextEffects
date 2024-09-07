@@ -50,8 +50,8 @@ https://github.com/gameshalico/TextEffects.git
 | 機能 | 概要 |
 | --- | --- |
 | Formatter | タグとして解釈される前にテキストの置換、整形を行います。 |
-| TagStyler | StyleTagを元にテキストに恒常的なスタイルを適用します。 |
 | Typewriter | DisplayTagを元に、テキストを1文字ずつ表示します。 |
+| TagStyler | StyleTagを元にテキストに恒常的なスタイルを適用します。 |
 
 ## Formatter
 `Formatter` は、テキストを解釈する前に、置換、整形を行う `TextEffectorFeature` です。
