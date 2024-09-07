@@ -10,6 +10,9 @@ using TMPro;
 using UnityEngine;
 #if TEXTEFFECTS_UNITASK_SUPPORT
 using Cysharp.Threading.Tasks;
+
+#else
+using System.Threading.Tasks;
 #endif
 
 namespace TextEffects.Effects.Typewriter
