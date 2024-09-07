@@ -35,7 +35,7 @@ https://github.com/gameshalico/TextEffects.git
 
 [TextEffectorFeature](#TextEffectorFeature)
 - [Formatter](#Formatter)
-- [Typewriter](#Formatter)
+- [Typewriter](#Typewriter)
 - [Formatter](#Formatter)
 
 
@@ -51,7 +51,7 @@ https://github.com/gameshalico/TextEffects.git
 | --- | --- |
 | Formatter | タグとして解釈される前にテキストの置換、整形を行います。 |
 | TagStyler | StyleTagを元にテキストに恒常的なスタイルを適用します。 |
-| TagStyler | DisplayTagを元に、テキストを1文字ずつ表示します。 |
+| Typewriter | DisplayTagを元に、テキストを1文字ずつ表示します。 |
 
 ## Formatter
 `Formatter` は、テキストを解釈する前に、置換、整形を行う `TextEffectorFeature` です。
