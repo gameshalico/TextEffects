@@ -1,6 +1,5 @@
 # Text Effects
 Text Effects は、Unityのテキスト(TMP)に対して、
-
 置換、アニメーションなどの効果を手軽に適用することを可能にするライブラリです。
 
 ![](./docs/img/components.png)
@@ -28,11 +27,11 @@ https://github.com/gameshalico/TextEffects.git
 
 ### 3. 各種効果 (TextEffectorFeature) の適用
 
-TextEffectorの Add Features ボタンから、適用したい効果を選択します。通常のAddComponentから追加することも可能です。
+`TextEffector` の Add Features ボタンから、適用したい効果を選択します。通常のAddComponentから追加することも可能です。
 
 ![](./docs/img/addfeature.png)
 
-組み込みのTextEffectorFeatureは以下を参照してください。
+組み込みの `TextEffectorFeature` は以下を参照してください。
 
 [TextEffectorFeature](#TextEffectorFeature)
 - [Formatter](#Formatter)
@@ -41,12 +40,12 @@ TextEffectorの Add Features ボタンから、適用したい効果を選択し
 
 
 ## TextEffectorFeature
-TextEffectorを通じて適用できる効果のことを総称して `TextEffectorFeature` と呼びます。
+`TextEffector` を通じて適用できる効果のことを総称して `TextEffectorFeature` と呼びます。
 
-これらのコンポーネントはITextAnimationEffect, ITextFormatterのインターフェースを通じてTextEffectorを拡張し、
+これらのコンポーネントは `ITextAnimationEffect` , `ITextFormatter` のインターフェースを通じて `TextEffector` を拡張し、
 テキストに対して様々な効果を適用することができます。
 
-主要なTextEffectorFeatureは以下の通りです。
+主要な `TextEffectorFeature` は以下の通りです。
 
 | 機能 | 概要 |
 | --- | --- |
@@ -55,7 +54,7 @@ TextEffectorを通じて適用できる効果のことを総称して `TextEffec
 | TagStyler | DisplayTagを元に、テキストを1文字ずつ表示します。 |
 
 ## Formatter
-Formatterは、テキストを解釈する前に、置換、整形を行うTextEffectorFeatureです。
+`Formatter` は、テキストを解釈する前に、置換、整形を行う `TextEffectorFeature` です。
 
 実装済みのFormatterは以下の通りです。
 
@@ -70,20 +69,20 @@ Formatterは、テキストを解釈する前に、置換、整形を行うTextE
 ## Typewriter
 ![](./docs/img/text-typewriter.png)
 
-Typewriterは、DisplayTagを元に、テキストを1文字ずつ表示するTextEffectorFeatureです。
+`Typewriter` は、`DisplayTag`を元に、テキストを1文字ずつ表示する `TextEffectorFeature` です。
 使用する際は、表示、非表示アニメーションを指定する必要があります。
 
 UniTaskを導入している場合はUniTaskを、導入していない場合はTaskを使用して再生します。
 
-即座に表示したい場合は、`<@fade d=0>`のように、durationを0に設定してください。
+即座に表示したい場合は、`<@fade d=0>`のように、`duration`を0に設定してください。
 
 TextTypewriterコンポーネントを通じて、再生や停止、一時停止などの操作が可能です。
 
 - `Play(string text)`関数で、指定したテキストを再生します。
 - `PlayScript()`関数で、現状のテキストを再生します。
 
-尚、それぞれ非同期版のPlayAsync, PlayScriptAsyncが用意されています。
-その他の操作は、TextTypewriterを参照してください。
+尚、それぞれ非同期版の`PlayAsync`, `PlayScriptAsync`が用意されています。
+その他の操作は、`TextTypewriter`を参照してください。
 
 | 変数 | 説明 |
 | --- | --- |
@@ -93,16 +92,16 @@ TextTypewriterコンポーネントを通じて、再生や停止、一時停止
 
 
 ### DisplayTag
-DisplayTagを用いて、テキストの表示、非表示アニメーションを指定できます。
+`DisplayTag`を用いて、テキストの表示、非表示アニメーションを指定できます。
 
-DisplayTagには、@XXX、~XXXのように、一つのアニメーションタイプに対して二種類のタグが存在します。
+`DisplayTag`には、@XXX、~XXXのように、一つのアニメーションタイプに対して二種類のタグが存在します。
 
 @XXX は表示アニメーション、~XXX は非表示アニメーションを指定します。
 
 | タグ | 効果 | 引数 |
 | --- | --- | --- |
 | **\<@fade/~fade\>** | フェードイン/アウト | d |
-| **\<@scale/~scale\>** | 拡大/縮小 | a,d |
+| **\<@scale/~scale\>** | 拡大縮小 | a,d |
 | **\<@offset/~offset\>** | 移動 | x,y,d |
 | **\<@roffset/~roffset\>** | ランダム位置移動 | a,d |
 | **\<@rotate/~rotate\>** | 回転 | a,d |
@@ -115,9 +114,9 @@ DisplayTagには、@XXX、~XXXのように、一つのアニメーションタ�
 | **y** | y | y方向の移動量 |
 
 ### その他のタグ
-Typewriterには、再生時に特定の効果を適用するためのタグが用意されています。
+`Typewriter`には、再生時に特定の効果を適用するためのタグが用意されています。
 
-IScriptModifier, IScriptListenerというインターフェースを通じて独自に拡張することも可能です。
+`IScriptModifier`, `IScriptListener`というインターフェースを通じて独自に拡張することも可能です。
 
 | タグ | 効果 | 引数 |
 | --- | --- | --- |
@@ -134,9 +133,9 @@ IScriptModifier, IScriptListenerというインターフェースを通じて独
 ## TagStyler
 ![](./docs/img/text-tag-styler.png)
 
-TagStylerは、StyleTagを元に、テキストに恒常的なスタイルを適用するTextEffectorFeatureです。
+`TagStyler`は、`StyleTag`を元に、テキストに恒常的なスタイルを適用する`TextEffectorFeature`です。
 
-実装済みのStyleTagは以下の通りです。
+実装済みの`StyleTag`は以下の通りです。
 
 ### StyleTag
 | タグ | 効果 | 引数 |
