@@ -14,8 +14,14 @@ namespace TextEffects.Editor
             var autoPlay = serializedObject.FindProperty("_autoPlay");
             var defaultDelay = serializedObject.FindProperty("_defaultDelay");
 
-            EditorGUILayout.PropertyField(autoPlay);
-            EditorGUILayout.PropertyField(defaultDelay);
+            using (new EditorGUI.ChangeCheckScope())
+            {
+                EditorGUILayout.PropertyField(autoPlay);
+                EditorGUILayout.PropertyField(defaultDelay);
+
+                if (EditorGUI.EndChangeCheck())
+                    serializedObject.ApplyModifiedProperties();
+            }
 
             using (new GUILayout.HorizontalScope())
             {
