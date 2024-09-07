@@ -8,6 +8,7 @@ namespace TextEffects.Core
 {
     [ExecuteAlways]
     [DisallowMultipleComponent]
+    [AddComponentMenu("Text Effects/Text Effector", -1)]
     [RequireComponent(typeof(TMP_Text))]
     public partial class TextEffector : MonoBehaviour
     {
@@ -27,8 +28,6 @@ namespace TextEffects.Core
             InitializeIfNeeded();
 
             TMPText.textPreprocessor = _textPreprocessor;
-
-            TMPro_EventManager.TEXT_CHANGED_EVENT.Add(OnTextChanged);
             TMPText.OnPreRenderText += OnPreRenderText;
 
             TMPText.SetAllDirty();
@@ -37,8 +36,6 @@ namespace TextEffects.Core
         private void OnDisable()
         {
             TMPText.textPreprocessor = null;
-
-            TMPro_EventManager.TEXT_CHANGED_EVENT.Remove(OnTextChanged);
             TMPText.OnPreRenderText -= OnPreRenderText;
 
             TMPText.SetAllDirty();
@@ -47,7 +44,7 @@ namespace TextEffects.Core
         private void OnRenderObject()
         {
 #if UNITY_EDITOR
-            if (!Application.isPlaying)
+            if (Application.isEditor)
             {
                 EditorApplication.QueuePlayerLoopUpdate();
                 SceneView.RepaintAll();
@@ -66,16 +63,11 @@ namespace TextEffects.Core
             _textPreprocessor = new TextPreprocessor(this);
         }
 
+        [ContextMenu("Refresh")]
         public void SetDirty()
         {
             InitializeIfNeeded();
             TMPText.SetAllDirty();
-        }
-
-        private void OnTextChanged(Object obj)
-        {
-            if (obj != TMPText)
-                return;
         }
 
         private void OnPreRenderText(TMP_TextInfo info)

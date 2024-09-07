@@ -2,9 +2,10 @@
 using System.Linq;
 using UnityEngine;
 
-namespace TextEffects.Formatters
+namespace TextEffects.Formatters.ScriptableFormatters
 {
-    [CreateAssetMenu(fileName = "TextFormatter Group", menuName = "TypeWriter/Text Formatter/Group Text Formatter")]
+    [CreateAssetMenu(fileName = "Group Scriptable Formatter",
+        menuName = "Text Effects/Formatters/Group Scriptable Formatter")]
     public class GroupScriptableFormatter : ScriptableFormatter
     {
         [SerializeField] private int _order;

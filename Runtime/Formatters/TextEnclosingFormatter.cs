@@ -4,8 +4,8 @@ using UnityEngine;
 
 namespace TextEffects.Formatters
 {
-    [AddComponentMenu("")]
-    [AddEffectorFeatureMenu("Formatter/Enclosing Formatter")]
+    [AddComponentMenu("Text Effects/Enclosing Formatter")]
+    [AddEffectorFeatureMenu("Formatters/Enclosing Formatter")]
     public class TextEnclosingFormatter : FormatterEffectorFeature
     {
         [SerializeField] private int _priority;

@@ -1,10 +1,11 @@
 ﻿using TextEffects.Core;
+using TextEffects.Formatters.ScriptableFormatters;
 using UnityEngine;
 
 namespace TextEffects.Formatters
 {
-    [AddComponentMenu("")]
-    [AddEffectorFeatureMenu("Formatter/Scriptable Object Formatter")]
+    [AddComponentMenu("Text Effects/Scriptable Formatter")]
+    [AddEffectorFeatureMenu("Formatters/Scriptable Object Formatter")]
     public class TextScriptableObjectFormatter : FormatterEffectorFeature
     {
         [SerializeField] private int _order;

@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using UnityEngine;
 
-namespace TextEffects.Formatters
+namespace TextEffects.Formatters.ScriptableFormatters
 {
-    [CreateAssetMenu(fileName = "Tag Text Formatter", menuName = "TypeWriter/Text Formatter/Tag Text Formatter")]
+    [CreateAssetMenu(fileName = "Tag Replace Formatter", menuName = "Text Effects/Formatters/Tag Replace Formatter")]
     public class TagReplaceFormatter : ScriptableFormatter
     {
         [SerializeField] private TagReplacement[] _replacements;

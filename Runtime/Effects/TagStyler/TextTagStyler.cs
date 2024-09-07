@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace TextEffects.Effects.TagStyler
 {
-    [AddComponentMenu("")]
+    [AddComponentMenu("Text Effects/Tag Styler")]
     [AddEffectorFeatureMenu("Effects/Tag Styler")]
     public class TextTagStyler : TextEffectorFeature
     {

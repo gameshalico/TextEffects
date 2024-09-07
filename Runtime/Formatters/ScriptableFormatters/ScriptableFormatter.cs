@@ -2,7 +2,7 @@
 using TextEffects.Core;
 using UnityEngine;
 
-namespace TextEffects.Formatters
+namespace TextEffects.Formatters.ScriptableFormatters
 {
     public abstract class ScriptableFormatter : ScriptableObject, ITextFormatter
     {

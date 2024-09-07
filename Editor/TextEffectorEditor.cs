@@ -12,8 +12,6 @@ namespace TextEffects.Editor
         {
             var textEffector = (TextEffector)target;
 
-            if (GUILayout.Button("Refresh")) textEffector.SetDirty();
-
             if (GUILayout.Button("Add Feature"))
             {
                 var advancedDropdown = new EffectorFeatureAdvancedDropdown(new AdvancedDropdownState());

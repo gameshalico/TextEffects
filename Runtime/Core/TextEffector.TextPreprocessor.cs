@@ -26,6 +26,7 @@ namespace TextEffects.Core
         {
             private readonly List<ITextFormatter> _formatters = new();
             private readonly TextEffector _textEffector;
+            private int _prevStringHash;
 
             public TextPreprocessor(TextEffector textEffector)
             {
@@ -41,7 +42,10 @@ namespace TextEffects.Core
                     formattedText = formatter.FormatText(formattedText);
 
                 var parseResults = TagParser.Parse(formattedText);
-                _textEffector._animationHandler.SetTags(parseResults.tags);
+
+                if (_prevStringHash != formattedText.GetHashCode())
+                    _textEffector._animationHandler.SetTags(parseResults.tags);
+                _prevStringHash = formattedText.GetHashCode();
 
                 return parseResults.tmpText;
             }

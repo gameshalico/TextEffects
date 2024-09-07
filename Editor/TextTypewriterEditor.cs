@@ -9,8 +9,13 @@ namespace TextEffects.Editor
     {
         public override void OnInspectorGUI()
         {
-            base.OnInspectorGUI();
             var textTypewriter = (TextTypewriter)target;
+
+            var autoPlay = serializedObject.FindProperty("_autoPlay");
+            var defaultDelay = serializedObject.FindProperty("_defaultDelay");
+
+            EditorGUILayout.PropertyField(autoPlay);
+            EditorGUILayout.PropertyField(defaultDelay);
 
             using (new GUILayout.HorizontalScope())
             {

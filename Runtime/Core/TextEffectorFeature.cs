@@ -22,11 +22,13 @@ namespace TextEffects.Core
         private void OnEnable()
         {
             AddFeature(Effector);
+            Effector.SetDirty();
         }
 
         private void OnDisable()
         {
             RemoveFeature(Effector);
+            Effector.SetDirty();
         }
 
         protected abstract void AddFeature(TextEffector textEffector);
