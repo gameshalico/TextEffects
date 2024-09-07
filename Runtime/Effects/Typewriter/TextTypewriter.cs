@@ -23,6 +23,7 @@ namespace TextEffects.Effects.Typewriter
     public class TextTypewriter : TextEffectorFeature
     {
         [SerializeField] private bool _autoPlay;
+        [SerializeField] private bool _keepDisplayOnRefresh = true;
         [SerializeField] private float _defaultDelay = 0.01f;
         private AutoPlayEffect _autoPlayEffect;
         private DefaultScriptModifier _defaultScriptModifier;
@@ -50,9 +51,22 @@ namespace TextEffects.Effects.Typewriter
             }
         }
 
+        public bool KeepDisplayOnRefresh
+        {
+            get => _keepDisplayOnRefresh;
+            set
+            {
+                _keepDisplayOnRefresh = value;
+                if (_typewriterEffect != null)
+                    _typewriterEffect.KeepDisplayOnRefresh = value;
+            }
+        }
+
+
         private void OnValidate()
         {
-            if (_defaultScriptModifier != null) DefaultDelay = _defaultDelay;
+            DefaultDelay = _defaultDelay;
+            KeepDisplayOnRefresh = _keepDisplayOnRefresh;
         }
 
         protected override void AddFeature(TextEffector textEffector)
@@ -152,7 +166,7 @@ namespace TextEffects.Effects.Typewriter
             if (_typewriterEffect != null)
                 return;
 
-            _typewriterEffect = new TypewriterEffect(DisplayTagFactoryMap.Default);
+            _typewriterEffect = new TypewriterEffect(DisplayTagFactoryMap.Default, _keepDisplayOnRefresh);
             _defaultScriptModifier = new DefaultScriptModifier(_defaultDelay);
             _tagEventDispatcherScriptListener = new TagEventDispatcherScriptListener();
             _tagEventDispatcherScriptListener.OnEventTriggered += _onEventTriggered;

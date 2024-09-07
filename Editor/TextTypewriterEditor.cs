@@ -12,11 +12,13 @@ namespace TextEffects.Editor
             var textTypewriter = (TextTypewriter)target;
 
             var autoPlay = serializedObject.FindProperty("_autoPlay");
+            var keepDisplayOnRefresh = serializedObject.FindProperty("_keepDisplayOnRefresh");
             var defaultDelay = serializedObject.FindProperty("_defaultDelay");
 
             using (new EditorGUI.ChangeCheckScope())
             {
                 EditorGUILayout.PropertyField(autoPlay);
+                EditorGUILayout.PropertyField(keepDisplayOnRefresh);
                 EditorGUILayout.PropertyField(defaultDelay);
 
                 if (EditorGUI.EndChangeCheck())

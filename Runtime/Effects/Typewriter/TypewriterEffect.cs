@@ -23,13 +23,14 @@ namespace TextEffects.Effects.Typewriter
         private readonly List<IScriptModifier> _modifiers;
         private readonly List<IScriptListener> _listeners;
         private IDisplayTag[] _displayTags;
-        private int _charCount;
+        private int _characterCount;
         private ScriptTextInfo _scriptInfo;
         private CancellationTokenSource _playCts;
 
-        public TypewriterEffect(IDisplayTagFactory displayTagFactory)
+        public TypewriterEffect(IDisplayTagFactory displayTagFactory, bool keepDisplayOnRefresh)
         {
             DisplayTagFactory = displayTagFactory;
+            KeepDisplayOnRefresh = keepDisplayOnRefresh;
 
             _modifiers = new List<IScriptModifier>();
             _listeners = new List<IScriptListener>();
@@ -38,13 +39,22 @@ namespace TextEffects.Effects.Typewriter
         public bool IsPaused { get; private set; }
 
         public IDisplayTagFactory DisplayTagFactory { get; set; }
+        public bool KeepDisplayOnRefresh { get; set; }
 
         public void Setup(TMP_TextInfo textInfo, IReadOnlyCollection<TagInfo> tags)
         {
             foreach (var listener in _listeners) listener.OnSetup(textInfo, tags);
 
-            _charCount = textInfo.characterCount;
-            _scriptInfo = new ScriptTextInfo(_charCount);
+            _characterCount = textInfo.characterCount;
+
+#if UNITY_EDITOR
+            var isScriptCreate = !KeepDisplayOnRefresh || _scriptInfo == null;
+#endif
+
+            if (!KeepDisplayOnRefresh || _scriptInfo == null)
+                _scriptInfo = new ScriptTextInfo(_characterCount);
+            else
+                _scriptInfo.Resize(_characterCount);
 
             foreach (var modifier in _modifiers) modifier.ModifyScript(tags, _scriptInfo);
             foreach (var listener in _listeners) listener.OnScriptModify(_scriptInfo);
@@ -58,7 +68,7 @@ namespace TextEffects.Effects.Typewriter
                 tag.Setup(textInfo, tags);
 
 #if UNITY_EDITOR
-            if (!Application.isPlaying)
+            if (!Application.isPlaying && isScriptCreate)
                 PlayScriptLoop(default).ForgetSafe();
 #endif
         }
@@ -72,9 +82,11 @@ namespace TextEffects.Effects.Typewriter
         public void Release()
         {
 #if UNITY_EDITOR
-            _loopCts?.Cancel();
+            if (!KeepDisplayOnRefresh)
+                _loopCts?.Cancel();
 #endif
-            _playCts?.Cancel();
+            if (!KeepDisplayOnRefresh)
+                _playCts?.Cancel();
 
             foreach (var tag in _displayTags)
                 tag.Release();
@@ -134,19 +146,19 @@ namespace TextEffects.Effects.Typewriter
 
         public void ShowAll(bool skipAnimation = false)
         {
-            for (var i = 0; i < _charCount; i++)
+            for (var i = 0; i < _characterCount; i++)
                 ShowAt(i, skipAnimation);
         }
 
         public void HideAll(bool skipAnimation = false)
         {
-            for (var i = 0; i < _charCount; i++)
+            for (var i = 0; i < _characterCount; i++)
                 HideAt(i, skipAnimation);
         }
 
         public void ResetAll()
         {
-            for (var i = 0; i < _charCount; i++)
+            for (var i = 0; i < _characterCount; i++)
                 ResetAt(i);
         }
 
@@ -179,20 +191,31 @@ namespace TextEffects.Effects.Typewriter
 
                 foreach (var listener in _listeners) listener.OnPlay();
 
-                for (var i = 0; i < _charCount; i++)
+                var characterIndex = 0;
+                while (!_playCts.Token.IsCancellationRequested)
                 {
-                    var scriptCharacterInfo = _scriptInfo.ScriptCharacterInfo[i];
-                    if (scriptCharacterInfo.IsShown)
-                        continue;
-                    if (scriptCharacterInfo.Delay > 0)
+                    if (characterIndex >= _characterCount)
+                        break;
 
+                    var scriptCharacterInfo = _scriptInfo.ScriptCharacterInfo[characterIndex];
+                    if (scriptCharacterInfo.IsShown)
+                    {
+                        characterIndex++;
+                        continue;
+                    }
+
+                    if (scriptCharacterInfo.Delay > 0)
                         await SafeTask.Delay(TimeSpan.FromSeconds(scriptCharacterInfo.Delay), _playCts.Token);
 
                     while (IsPaused)
                         await SafeTask.WaitWhile(() => IsPaused, _playCts.Token);
 
                     _playCts.Token.ThrowIfCancellationRequested();
-                    ShowAt(i);
+                    if (characterIndex >= _characterCount) break;
+
+                    ShowAt(characterIndex);
+
+                    characterIndex++;
                 }
 
                 await SafeTask.Delay(TimeSpan.FromSeconds(_scriptInfo.LastDelay), _playCts.Token);
