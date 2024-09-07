@@ -5,6 +5,7 @@ namespace TextEffects.Effects.TagStyler
 {
     [AddComponentMenu("Text Effects/Text Tag Styler")]
     [AddEffectorFeatureMenu("Effects/Tag Styler")]
+    [DisallowMultipleComponent]
     public class TextTagStyler : TextEffectorFeature
     {
         private TextStyleEffect _textStyleEffect;
