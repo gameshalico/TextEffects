@@ -8,7 +8,7 @@ namespace TextEffects.Formatters
     [AddEffectorFeatureMenu("Formatters/Enclosing Formatter")]
     public class TextEnclosingFormatter : FormatterEffectorFeature
     {
-        [SerializeField] private int _priority;
+        [SerializeField] private int _order;
         [TextArea] [SerializeField] private string _preText;
         [TextArea] [SerializeField] private string _postText;
 
@@ -32,7 +32,7 @@ namespace TextEffects.Formatters
             }
         }
 
-        public override int FormatOrder => _priority;
+        public override int FormatOrder => _order;
 
         private void OnValidate()
         {
