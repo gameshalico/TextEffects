@@ -6,28 +6,28 @@ using UnityEngine;
 namespace TextEffects.Formatters.ScriptableFormatters
 {
     [CreateAssetMenu(fileName = "Tag Replace Formatter", menuName = "Text Effects/Formatters/Tag Replace Formatter")]
-    public class TagReplaceFormatter : ScriptableFormatter
+    public class TagReplaceScriptableFormatter : ScriptableFormatter
     {
-        [SerializeField] private TagReplacement[] _replacements;
-
         [SerializeField] private int _order;
+        [SerializeField] private TagReplacementData[] _replacements;
+
         private Regex _cachedReplacementRegex;
         private IReadOnlyDictionary<string, string> _cachedReplacements;
         private bool _needToRefresh = true;
 
-        private Action _onReplacementsChanged;
+        private Action _onTextChanged;
         public override int FormatOrder => _order;
 
         private void OnValidate()
         {
             _needToRefresh = true;
-            _onReplacementsChanged?.Invoke();
+            _onTextChanged?.Invoke();
         }
 
         public override event Action OnTextChanged
         {
-            add => _onReplacementsChanged += value;
-            remove => _onReplacementsChanged -= value;
+            add => _onTextChanged += value;
+            remove => _onTextChanged -= value;
         }
 
         public override string FormatText(string input)
@@ -56,7 +56,7 @@ namespace TextEffects.Formatters.ScriptableFormatters
 
 
         [Serializable]
-        public struct TagReplacement
+        public struct TagReplacementData
         {
             public string TagName;
             public string OpeningTag;

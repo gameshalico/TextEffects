@@ -10,7 +10,7 @@ namespace TextEffects.Formatters.ScriptableFormatters
     {
         [SerializeField] private int _order;
         [SerializeField] private ScriptableFormatter[] _formatters;
-        private Action _onReplacementsChanged;
+        private Action _onTextChanged;
 
         private ScriptableFormatter[] _subscribedFormatters;
 
@@ -18,7 +18,7 @@ namespace TextEffects.Formatters.ScriptableFormatters
 
         private void OnValidate()
         {
-            _onReplacementsChanged?.Invoke();
+            _onTextChanged?.Invoke();
 
             if (_subscribedFormatters != null)
                 foreach (var formatter in _subscribedFormatters)
@@ -41,13 +41,13 @@ namespace TextEffects.Formatters.ScriptableFormatters
         [ContextMenu("Refresh")]
         private void Refresh()
         {
-            _onReplacementsChanged?.Invoke();
+            _onTextChanged?.Invoke();
         }
 
         public override event Action OnTextChanged
         {
-            add => _onReplacementsChanged += value;
-            remove => _onReplacementsChanged -= value;
+            add => _onTextChanged += value;
+            remove => _onTextChanged -= value;
         }
 
         public override string FormatText(string input)
