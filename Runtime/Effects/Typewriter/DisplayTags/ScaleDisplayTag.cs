@@ -11,7 +11,7 @@ namespace TextEffects.Effects.Typewriter.DisplayTags
         protected override void OnSetTag(TagInfo tagInfo)
         {
             _duration = tagInfo.GetFloat("d", 0.1f);
-            _initialSize = tagInfo.GetFloat("s");
+            _initialSize = tagInfo.GetFloat("a");
         }
 
         protected override void UpdateCharacterInTag(
@@ -31,7 +31,7 @@ namespace TextEffects.Effects.Typewriter.DisplayTags
         protected override void OnSetTag(TagInfo tagInfo)
         {
             _duration = tagInfo.GetFloat("d", 0.1f);
-            _targetSize = tagInfo.GetFloat("s");
+            _targetSize = tagInfo.GetFloat("a");
         }
 
         protected override void UpdateCharacterInTag(

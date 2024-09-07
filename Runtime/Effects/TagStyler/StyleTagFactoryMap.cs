@@ -16,7 +16,7 @@ namespace TextEffects.Effects.TagStyler
         public static StyleTagFactoryMap Default { get; } = new(new Dictionary<string, IStyleTagFactory>
         {
             { "wave", new PooledStyleTag<WaveStyleTag>.Factory() },
-            { "incr", new PooledStyleTag<IncreasingSizeStyleTag>.Factory() },
+            { "pulse", new PooledStyleTag<PulseStyleTag>.Factory() },
             { "rainb", new PooledStyleTag<RainbowStyleTag>.Factory() },
             { "swing", new PooledStyleTag<SwingStyleTag>.Factory() },
             { "pend", new PooledStyleTag<PendulumStyleTag>.Factory() },

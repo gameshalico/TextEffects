@@ -24,8 +24,8 @@ namespace TextEffects.Effects.Typewriter
             { "@offset", new PooledDisplayTag<OffsetShowTag>.Factory() },
             { "~offset", new PooledDisplayTag<OffsetHideTag>.Factory() },
 
-            { "@rdir", new PooledDisplayTag<RandomOffsetShowTag>.Factory() },
-            { "~rdir", new PooledDisplayTag<RandomOffsetHideTag>.Factory() },
+            { "@roffset", new PooledDisplayTag<RandomOffsetShowTag>.Factory() },
+            { "~roffset", new PooledDisplayTag<RandomOffsetHideTag>.Factory() },
 
             { "@rotate", new PooledDisplayTag<RotateShowTag>.Factory() },
             { "~rotate", new PooledDisplayTag<RotateHideTag>.Factory() }

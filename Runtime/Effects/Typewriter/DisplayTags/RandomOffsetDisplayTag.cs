@@ -11,7 +11,7 @@ namespace TextEffects.Effects.Typewriter.DisplayTags
         protected override void OnSetTag(TagInfo tagInfo)
         {
             _duration = tagInfo.GetFloat("d", 0.1f);
-            var radius = tagInfo.GetFloat("r", 10f);
+            var radius = tagInfo.GetFloat("a", 10f);
             _offsets = new Vector2[tagInfo.Length];
             for (var i = 0; i < _offsets.Length; i++) _offsets[i] = Random.insideUnitCircle * radius;
         }
@@ -35,7 +35,7 @@ namespace TextEffects.Effects.Typewriter.DisplayTags
         protected override void OnSetTag(TagInfo tagInfo)
         {
             _duration = tagInfo.GetFloat("d", 0.1f);
-            var radius = tagInfo.GetFloat("r", 50f);
+            var radius = tagInfo.GetFloat("a", 50f);
             _offsets = new Vector2[tagInfo.Length];
             for (var i = 0; i < _offsets.Length; i++) _offsets[i] = Random.insideUnitCircle * radius;
         }

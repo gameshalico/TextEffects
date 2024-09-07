@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace TextEffects.Effects.TagStyler.StyleTags
 {
-    public class IncreasingSizeStyleTag : ContainerStyleTag<IncreasingSizeStyleTag>
+    public class PulseStyleTag : ContainerStyleTag<PulseStyleTag>
     {
         private float _amplitude;
         private float _frequency;
