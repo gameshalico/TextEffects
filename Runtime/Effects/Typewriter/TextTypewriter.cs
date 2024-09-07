@@ -23,7 +23,7 @@ namespace TextEffects.Effects.Typewriter
     public class TextTypewriter : TextEffectorFeature
     {
         [SerializeField] private bool _autoPlay;
-        [SerializeField] private bool _keepDisplayOnRefresh = true;
+        [SerializeField] private bool _keepDisplayOnRefresh;
         [SerializeField] private float _defaultDelay = 0.01f;
         private AutoPlayEffect _autoPlayEffect;
         private DefaultScriptModifier _defaultScriptModifier;
