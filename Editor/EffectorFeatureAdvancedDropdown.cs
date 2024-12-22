@@ -59,11 +59,7 @@ namespace TextEffects.Editor
                                 if (i == path.Length - 1)
                                 {
                                     item.id = type.GetHashCode();
-                                    var monoScript =
-                                        MonoScript.FromScriptableObject(ScriptableObject.CreateInstance(type));
-                                    var icon = EditorGUIUtility.GetIconForObject(monoScript);
-
-                                    item.icon = icon;
+                                    item.icon = AssetPreview.GetMiniTypeThumbnail(type);
                                     _types.TryAdd(item.id, type);
                                 }
                             }
