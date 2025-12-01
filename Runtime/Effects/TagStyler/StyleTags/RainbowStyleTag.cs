@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace TextEffects.Effects.TagStyler.StyleTags
 {
-    public class RainbowStyleTag : ContainerStyleTag<RainbowStyleTag>
+    public sealed class RainbowStyleTag : ContainerStyleTag<RainbowStyleTag>
     {
         private float _frequency;
         private float _charStep;

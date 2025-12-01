@@ -4,7 +4,7 @@ using TextEffects.Data;
 
 namespace TextEffects.Effects.Typewriter.Modifiers
 {
-    public class DelayTagScriptModifier : IScriptModifier
+    public sealed class DelayTagScriptModifier : IScriptModifier
     {
         public void ModifyScript(IReadOnlyCollection<TagInfo> tags, ScriptTextInfo scriptInfo)
         {

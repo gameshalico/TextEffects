@@ -3,7 +3,7 @@ using TMPro;
 
 namespace TextEffects.Core
 {
-    internal class TextAnimationApplier
+    internal sealed class TextAnimationApplier
     {
         private readonly TMP_Text _tmpText;
         private readonly ITextAnimationHandler _handler;

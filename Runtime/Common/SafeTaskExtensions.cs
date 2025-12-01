@@ -20,11 +20,6 @@ namespace TextEffects.Common
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static async void ForgetSafe(this Task task)
         {
-            try {
-                await task;
-            } catch {
-                // Ignore exceptions
-            }
         }
 #endif
     }

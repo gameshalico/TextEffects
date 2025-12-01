@@ -6,7 +6,7 @@ using UnityEngine;
 namespace TextEffects.Formatters.ScriptableFormatters
 {
     [CreateAssetMenu(fileName = "Tag Replace Formatter", menuName = "Text Effects/Formatters/Tag Replace Formatter")]
-    public class TagReplaceScriptableFormatter : ScriptableFormatter
+    public sealed class TagReplaceScriptableFormatter : ScriptableFormatter
     {
         [SerializeField] private int _order;
         [SerializeField] private TagReplacementData[] _replacements;

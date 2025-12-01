@@ -37,7 +37,7 @@ namespace TextEffects.Effects.Typewriter.ScriptTags
         public abstract Task ExecuteAsync(CancellationToken cancellationToken = default);
 #endif
 
-        public class Factory : IScriptTagFactory
+        public sealed class Factory : IScriptTagFactory
         {
             public IScriptTag CreateTag(TagInfo tagInfo)
             {

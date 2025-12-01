@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace TextEffects.Effects.Typewriter.DisplayTags
 {
-    public class RandomOffsetShowTag : ContainerDisplayTag<RandomOffsetShowTag>
+    public sealed class RandomOffsetShowTag : ContainerDisplayTag<RandomOffsetShowTag>
     {
         private float _duration;
         private Vector2[] _offsets;

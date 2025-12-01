@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace TextEffects.Effects.TagStyler.StyleTags
 {
-    public class WaveStyleTag : ContainerStyleTag<WaveStyleTag>
+    public sealed class WaveStyleTag : ContainerStyleTag<WaveStyleTag>
     {
         private float _amplitude;
         private float _frequency;

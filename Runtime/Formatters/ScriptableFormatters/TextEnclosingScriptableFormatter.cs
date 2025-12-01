@@ -5,7 +5,7 @@ namespace TextEffects.Formatters.ScriptableFormatters
 {
     [CreateAssetMenu(fileName = "Text Enclosing Formatter",
         menuName = "Text Effects/Formatters/Text Enclosing Formatter")]
-    public class TextEnclosingScriptableFormatter : ScriptableFormatter
+    public sealed class TextEnclosingScriptableFormatter : ScriptableFormatter
     {
         [SerializeField] private int _order;
 

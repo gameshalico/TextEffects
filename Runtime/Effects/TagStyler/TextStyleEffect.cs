@@ -6,7 +6,7 @@ using TMPro;
 
 namespace TextEffects.Effects.TagStyler
 {
-    public class TextStyleEffect : ITextAnimationEffect
+    public sealed class TextStyleEffect : ITextAnimationEffect
     {
         private IStyleTag[] _styleTags;
 

@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace TextEffects.Effects.Typewriter.DisplayTags
 {
-    public class ScaleShowTag : ContainerDisplayTag<ScaleShowTag>
+    public sealed class ScaleShowTag : ContainerDisplayTag<ScaleShowTag>
     {
         private float _duration;
         private float _initialSize;

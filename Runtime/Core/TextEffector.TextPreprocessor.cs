@@ -4,7 +4,7 @@ using TMPro;
 
 namespace TextEffects.Core
 {
-    public partial class TextEffector
+    public sealed partial class TextEffector
     {
         public IReadOnlyCollection<ITextFormatter> Formatters => _textPreprocessor.Formatters;
 

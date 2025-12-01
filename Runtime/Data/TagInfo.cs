@@ -5,7 +5,7 @@ using TextEffects.Common;
 
 namespace TextEffects.Data
 {
-    internal class TagInfoBuffer : PooledItem<TagInfoBuffer>, IEquatable<TagInfoBuffer>
+    internal sealed class TagInfoBuffer : PooledItem<TagInfoBuffer>, IEquatable<TagInfoBuffer>
     {
         public string TagName { get; private set; }
         public Dictionary<string, string> Attributes { get; set; } = new();

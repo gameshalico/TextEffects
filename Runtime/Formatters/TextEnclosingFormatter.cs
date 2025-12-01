@@ -6,7 +6,7 @@ namespace TextEffects.Formatters
 {
     [AddComponentMenu("Text Effects/Text Enclosing Formatter")]
     [AddEffectorFeatureMenu("Formatters/Enclosing Formatter")]
-    public class TextEnclosingFormatter : FormatterEffectorFeature
+    public sealed class TextEnclosingFormatter : FormatterEffectorFeature
     {
         [SerializeField] private int _order;
         [TextArea] [SerializeField] private string _preText;

@@ -10,7 +10,7 @@ namespace TextEffects.Core
     [DisallowMultipleComponent]
     [AddComponentMenu("Text Effects/Text Effector", -1)]
     [RequireComponent(typeof(TMP_Text))]
-    public partial class TextEffector : MonoBehaviour
+    public sealed partial class TextEffector : MonoBehaviour
     {
         private TextAnimationApplier _animationApplier;
         private TextAnimationHandler _animationHandler;

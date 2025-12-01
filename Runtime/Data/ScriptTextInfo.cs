@@ -3,7 +3,7 @@ using TextEffects.Effects.Typewriter;
 
 namespace TextEffects.Data
 {
-    public class ScriptTextInfo
+    public sealed class ScriptTextInfo
     {
         public ScriptTextInfo(int charCount)
         {

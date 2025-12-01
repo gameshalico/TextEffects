@@ -4,7 +4,7 @@ using TextEffects.Effects.TagStyler.StyleTags;
 
 namespace TextEffects.Effects.TagStyler
 {
-    public class StyleTagFactoryMap : IStyleTagFactory
+    public sealed class StyleTagFactoryMap : IStyleTagFactory
     {
         private readonly Dictionary<string, IStyleTagFactory> _factories;
 

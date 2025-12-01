@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace TextEffects.Effects.TagStyler.StyleTags
 {
-    public class ShakeStyleTag : ContainerStyleTag<ShakeStyleTag>
+    public sealed class ShakeStyleTag : ContainerStyleTag<ShakeStyleTag>
     {
         private float _delay;
         private float _amplitude;

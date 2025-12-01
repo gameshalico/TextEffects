@@ -6,7 +6,7 @@ namespace TextEffects.Formatters.ScriptableFormatters
 {
     [CreateAssetMenu(fileName = "Group Scriptable Formatter",
         menuName = "Text Effects/Formatters/Group Scriptable Formatter")]
-    public class GroupScriptableFormatter : ScriptableFormatter
+    public sealed class GroupScriptableFormatter : ScriptableFormatter
     {
         [SerializeField] private int _order;
         [SerializeField] private ScriptableFormatter[] _formatters;

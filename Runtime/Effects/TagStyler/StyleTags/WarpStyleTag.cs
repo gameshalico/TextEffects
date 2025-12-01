@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace TextEffects.Effects.TagStyler.StyleTags
 {
-    public class WarpStyleTag : ContainerStyleTag<WarpStyleTag>
+    public sealed class WarpStyleTag : ContainerStyleTag<WarpStyleTag>
     {
         private float _delay;
         private float _amplitude;

@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace TextEffects.Effects.TagStyler.StyleTags
 {
-    public class WiggleStyleTag : ContainerStyleTag<WiggleStyleTag>
+    public sealed class WiggleStyleTag : ContainerStyleTag<WiggleStyleTag>
     {
         private float _amplitude;
         private float _frequency;

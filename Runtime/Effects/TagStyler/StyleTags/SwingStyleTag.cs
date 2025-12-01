@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace TextEffects.Effects.TagStyler.StyleTags
 {
-    public class SwingStyleTag : ContainerStyleTag<SwingStyleTag>
+    public sealed class SwingStyleTag : ContainerStyleTag<SwingStyleTag>
     {
         private float _amplitude;
         private float _frequency;

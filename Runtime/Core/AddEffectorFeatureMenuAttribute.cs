@@ -3,7 +3,7 @@
 namespace TextEffects.Core
 {
     [AttributeUsage(AttributeTargets.Class)]
-    public class AddEffectorFeatureMenuAttribute : Attribute
+    public sealed class AddEffectorFeatureMenuAttribute : Attribute
     {
         public AddEffectorFeatureMenuAttribute(string menuPath)
         {

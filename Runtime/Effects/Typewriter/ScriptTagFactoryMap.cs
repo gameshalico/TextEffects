@@ -8,7 +8,7 @@ namespace TextEffects.Effects.Typewriter
     /// ScriptTagのファクトリーマップ
     /// タグ名とファクトリーを紐付けて管理します
     /// </summary>
-    public class ScriptTagFactoryMap : IScriptTagFactory
+    public sealed class ScriptTagFactoryMap : IScriptTagFactory
     {
         private readonly Dictionary<string, IScriptTagFactory> _factories;
 

@@ -33,7 +33,7 @@ namespace TextEffects.Effects.TagStyler.StyleTags
         {
         }
 
-        public class Factory : IStyleTagFactory
+        public sealed class Factory : IStyleTagFactory
         {
             public IStyleTag CreateTag(TagInfo tagInfo)
             {

@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace TextEffects.Effects.Typewriter.DisplayTags
 {
-    public class RotateShowTag : ContainerDisplayTag<RotateShowTag>
+    public sealed class RotateShowTag : ContainerDisplayTag<RotateShowTag>
     {
         private float _duration;
         private float _angle;

@@ -2,7 +2,7 @@
 
 namespace TextEffects.Effects.Typewriter.DisplayTags
 {
-    public class FadeShowTag : ContainerDisplayTag<FadeShowTag>
+    public sealed class FadeShowTag : ContainerDisplayTag<FadeShowTag>
     {
         private float _duration;
 

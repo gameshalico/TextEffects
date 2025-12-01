@@ -21,7 +21,7 @@ namespace TextEffects.Effects.Typewriter
     [AddComponentMenu("Text Effects/Text Typewriter")]
     [AddEffectorFeatureMenu("Effects/Typewriter")]
     [DisallowMultipleComponent]
-    public class TextTypewriter : TextEffectorFeature
+    public sealed class TextTypewriter : TextEffectorFeature
     {
         [SerializeField] private bool _autoPlay;
         [SerializeField] private bool _keepDisplayOnRefresh;

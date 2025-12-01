@@ -19,7 +19,7 @@ using System.Threading.Tasks;
 
 namespace TextEffects.Effects.Typewriter
 {
-    public class TypewriterEffect : ITextAnimationEffect
+    public sealed class TypewriterEffect : ITextAnimationEffect
     {
         private readonly List<IScriptModifier> _modifiers;
         private readonly List<IScriptListener> _listeners;

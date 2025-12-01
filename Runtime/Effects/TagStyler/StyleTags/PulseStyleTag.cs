@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace TextEffects.Effects.TagStyler.StyleTags
 {
-    public class PulseStyleTag : ContainerStyleTag<PulseStyleTag>
+    public sealed class PulseStyleTag : ContainerStyleTag<PulseStyleTag>
     {
         private float _amplitude;
         private float _frequency;

@@ -4,7 +4,7 @@ using TextEffects.Effects.Typewriter.DisplayTags;
 
 namespace TextEffects.Effects.Typewriter
 {
-    public class DisplayTagFactoryMap : IDisplayTagFactory
+    public sealed class DisplayTagFactoryMap : IDisplayTagFactory
     {
         private readonly Dictionary<string, IDisplayTagFactory> _factories;
 

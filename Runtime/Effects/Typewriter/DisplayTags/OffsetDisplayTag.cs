@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace TextEffects.Effects.Typewriter.DisplayTags
 {
-    public class OffsetShowTag : ContainerDisplayTag<OffsetShowTag>
+    public sealed class OffsetShowTag : ContainerDisplayTag<OffsetShowTag>
     {
         private float _duration;
         private Vector3 _offset;

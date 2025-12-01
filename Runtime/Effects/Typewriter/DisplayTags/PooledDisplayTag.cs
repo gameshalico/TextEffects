@@ -34,7 +34,7 @@ namespace TextEffects.Effects.Typewriter.DisplayTags
         {
         }
 
-        public class Factory : IDisplayTagFactory
+        public sealed class Factory : IDisplayTagFactory
         {
             public IDisplayTag CreateTag(TagInfo tagInfo)
             {

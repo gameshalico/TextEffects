@@ -6,7 +6,7 @@ namespace TextEffects.Formatters
 {
     [AddComponentMenu("Text Effects/Text Scriptable Formatter")]
     [AddEffectorFeatureMenu("Formatters/Scriptable Object Formatter")]
-    public class TextScriptableObjectFormatter : FormatterEffectorFeature
+    public sealed class TextScriptableObjectFormatter : FormatterEffectorFeature
     {
         [SerializeField] private int _order;
         [SerializeField] private ScriptableFormatter _formatter;
