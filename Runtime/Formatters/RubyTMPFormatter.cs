@@ -14,6 +14,8 @@ namespace TextEffects.Formatters
         [SerializeField] private float _rubyVerticalOffset = 1f;
         [SerializeField] private string _rubyPrefixTag = "";
         [SerializeField] private string _rubySuffixTag = "";
+        [SerializeField] private bool _fixedLineHeight = false;
+        [SerializeField] [Range(1f, 3f)] private float _lineHeightMultiplier = 1.5f;
         private TMP_Text _textComponent;
 
         private void Awake()
@@ -63,9 +65,30 @@ namespace TextEffects.Formatters
             }
         }
 
+        public bool FixedLineHeight
+        {
+            get => _fixedLineHeight;
+            set
+            {
+                _fixedLineHeight = value;
+                SetDirty();
+            }
+        }
+
+        public float LineHeightMultiplier
+        {
+            get => _lineHeightMultiplier;
+            set
+            {
+                _lineHeightMultiplier = Mathf.Max(1f, value);
+                SetDirty();
+            }
+        }
+
         private void OnValidate()
         {
             _rubyScale = Mathf.Clamp01(_rubyScale);
+            _lineHeightMultiplier = Mathf.Max(1f, _lineHeightMultiplier);
             SetDirty();
         }
 
@@ -74,8 +97,16 @@ namespace TextEffects.Formatters
             if (_textComponent == null)
                 _textComponent = GetComponent<TMP_Text>();
 
-            return RubyTextHelper.FormatRubyText(input, _rubyScale, _rubyVerticalOffset,
+            var formatted = RubyTextHelper.FormatRubyText(input, _rubyScale, _rubyVerticalOffset,
                 text => _textComponent.GetPreferredValues(text), _rubyPrefixTag, _rubySuffixTag);
+
+            // 固定行の高さを適用
+            if (_fixedLineHeight)
+            {
+                formatted = $"<line-height={_lineHeightMultiplier * 100}%>{formatted}</line-height>";
+            }
+
+            return formatted;
         }
     }
 }
