@@ -26,9 +26,6 @@ namespace TextEffects.Effects.TagStyler
                 .Select(StyleTagFactory.CreateTag)
                 .Where(static tag => tag != null)
                 .ToArray();
-
-            foreach (var tag in _styleTags)
-                tag.Setup(textInfo, tags);
         }
 
         public void UpdateText(AnimationTextInfo animationInfo)

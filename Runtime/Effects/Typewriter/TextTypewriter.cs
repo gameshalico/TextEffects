@@ -4,10 +4,11 @@ using System.Threading;
 using TextEffects.Common;
 using TextEffects.Core;
 using TextEffects.Data;
-using TextEffects.Effects.Typewriter.Listeners;
 using TextEffects.Effects.Typewriter.Modifiers;
 using TMPro;
 using UnityEngine;
+using TextEffects.Effects.Typewriter.ScriptTags;
+
 #if TEXTEFFECTS_UNITASK_SUPPORT
 using Cysharp.Threading.Tasks;
 
@@ -27,9 +28,14 @@ namespace TextEffects.Effects.Typewriter
         [SerializeField] private float _defaultDelay = 0.01f;
         private AutoPlayEffect _autoPlayEffect;
         private DefaultScriptModifier _defaultScriptModifier;
-        private Action<TagEventData> _onEventTriggered;
-        private TagEventDispatcherScriptListener _tagEventDispatcherScriptListener;
+#if TEXTEFFECTS_UNITASK_SUPPORT
+        private Dictionary<string, Func<TagInfo, CancellationToken, UniTask>> _eventTagHandler;
+#else
+        private Dictionary<string, Func<TagInfo, CancellationToken, Task>> _eventTagHandler;
+#endif
         private TypewriterEffect _typewriterEffect;
+        private ScriptTagFactoryMap _scriptTagFactoryMap;
+        private DisplayTagFactoryMap _displayTagFactoryMap;
 
         public bool AutoPlay
         {
@@ -82,22 +88,50 @@ namespace TextEffects.Effects.Typewriter
             textEffector.RemoveEffect(_autoPlayEffect);
         }
 
-        public void SetDisplayTagFactory(IDisplayTagFactory displayTagFactory)
+        public void RegisterDisplayTag(string tagName, IDisplayTagFactory displayTagFactory)
         {
             InitializeIfNeeded();
-            _typewriterEffect.DisplayTagFactory = displayTagFactory;
+            if (_displayTagFactoryMap == null)
+            {
+                _displayTagFactoryMap = DisplayTagFactoryMap.Default.Clone();
+                _typewriterEffect.DisplayTagFactory = _displayTagFactoryMap;
+            }
+            _displayTagFactoryMap.RegisterFactory(tagName, displayTagFactory);
+        }
+        public void UnregisterDisplayTag(string tagName)
+        {
+            if (_displayTagFactoryMap == null)
+                return;
+
+            _displayTagFactoryMap.UnregisterFactory(tagName);
+        }
+
+        public void RegisterScriptTag(string tagName, IScriptTagFactory scriptTagFactory)
+        {
+            InitializeIfNeeded();
+            _scriptTagFactoryMap.RegisterFactory(tagName, scriptTagFactory);
+        }
+
+        public void UnregisterScriptTag(string tagName)
+        {
+            InitializeIfNeeded();
+            _scriptTagFactoryMap.UnregisterFactory(tagName);
+        }
+
+#if TEXTEFFECTS_UNITASK_SUPPORT
+        public void RegisterEventTagHandler(string tagName, Func<TagInfo, CancellationToken, UniTask> handler)
+#else
+        public void RegisterEventTagHandler(string tagName, Func<TagInfo, CancellationToken, Task> handler)
+#endif
+        {
+            InitializeIfNeeded();
+            _eventTagHandler[tagName] = handler;
         }
 
         public void ResetScript()
         {
             _typewriterEffect.Stop();
             _typewriterEffect.ResetAll();
-        }
-
-        public event Action<TagEventData> OnEventTriggered
-        {
-            add => _onEventTriggered += value;
-            remove => _onEventTriggered -= value;
         }
 
         public void Play(string text)
@@ -161,20 +195,40 @@ namespace TextEffects.Effects.Typewriter
             _typewriterEffect.RemoveListener(listener);
         }
 
+#if TEXTEFFECTS_UNITASK_SUPPORT
+        private async UniTask InvokeEventTagHandlerAsync(TagInfo tagInfo, CancellationToken cancellationToken)
+#else
+        private async Task InvokeEventTagHandlerAsync(TagInfo tagInfo, CancellationToken cancellationToken)
+#endif
+        {
+            if (_eventTagHandler != null && _eventTagHandler.TryGetValue(tagInfo.GetString(""), out var handler))
+            {
+                await handler(tagInfo, cancellationToken);
+            }
+        }
+
         private void InitializeIfNeeded()
         {
             if (_typewriterEffect != null)
                 return;
 
-            _typewriterEffect = new TypewriterEffect(DisplayTagFactoryMap.Default, _keepDisplayOnRefresh);
+            _eventTagHandler = new();
+
+            _scriptTagFactoryMap = ScriptTagFactoryMap.Default.Clone();
+            var factory = new EventScriptTag.Factory(InvokeEventTagHandlerAsync);
+            _scriptTagFactoryMap.RegisterFactory("evt", factory);
+            _scriptTagFactoryMap.RegisterFactory("event", factory);
+
+            _typewriterEffect = new TypewriterEffect(
+                DisplayTagFactoryMap.Default,
+                _scriptTagFactoryMap,
+                _keepDisplayOnRefresh);
             _defaultScriptModifier = new DefaultScriptModifier(_defaultDelay);
-            _tagEventDispatcherScriptListener = new TagEventDispatcherScriptListener();
-            _tagEventDispatcherScriptListener.OnEventTriggered += _onEventTriggered;
+
             _autoPlayEffect = new AutoPlayEffect(this);
 
             _typewriterEffect.AddModifier(_defaultScriptModifier);
             _typewriterEffect.AddModifier(new DelayTagScriptModifier());
-            _typewriterEffect.AddListener(_tagEventDispatcherScriptListener);
         }
 
 #if TEXTEFFECTS_UNITASK_SUPPORT

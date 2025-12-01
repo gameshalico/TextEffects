@@ -13,6 +13,11 @@ namespace TextEffects.Effects.TagStyler
             _factories = factories;
         }
 
+        public StyleTagFactoryMap Clone()
+        {
+            return new StyleTagFactoryMap(new Dictionary<string, IStyleTagFactory>(_factories));
+        }
+
         public static StyleTagFactoryMap Default { get; } = new(new Dictionary<string, IStyleTagFactory>
         {
             { "wave", new PooledStyleTag<WaveStyleTag>.Factory() },

@@ -6,7 +6,6 @@ namespace TextEffects.Effects.TagStyler
 {
     public interface IStyleTag
     {
-        void Setup(TMP_TextInfo textInfo, IReadOnlyCollection<TagInfo> tags);
         void UpdateText(AnimationTextInfo animationInfo);
         void Release();
     }

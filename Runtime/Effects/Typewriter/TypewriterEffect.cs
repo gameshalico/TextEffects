@@ -8,6 +8,7 @@ using TextEffects.Data;
 using TMPro;
 #if UNITY_EDITOR
 using UnityEngine;
+
 #endif
 #if TEXTEFFECTS_UNITASK_SUPPORT
 using Cysharp.Threading.Tasks;
@@ -23,15 +24,16 @@ namespace TextEffects.Effects.Typewriter
         private readonly List<IScriptModifier> _modifiers;
         private readonly List<IScriptListener> _listeners;
         private IDisplayTag[] _displayTags;
+        private (TagInfo Tag, IScriptTag ScriptTag)[] _scriptTags;
         private int _characterCount;
         private ScriptTextInfo _scriptInfo;
         private CancellationTokenSource _playCts;
 
-        public TypewriterEffect(IDisplayTagFactory displayTagFactory, bool keepDisplayOnRefresh)
+        public TypewriterEffect(IDisplayTagFactory displayTagFactory, IScriptTagFactory scriptTagFactory, bool keepDisplayOnRefresh)
         {
             DisplayTagFactory = displayTagFactory;
+            ScriptTagFactory = scriptTagFactory;
             KeepDisplayOnRefresh = keepDisplayOnRefresh;
-
             _modifiers = new List<IScriptModifier>();
             _listeners = new List<IScriptListener>();
         }
@@ -39,6 +41,7 @@ namespace TextEffects.Effects.Typewriter
         public bool IsPaused { get; private set; }
 
         public IDisplayTagFactory DisplayTagFactory { get; set; }
+        public IScriptTagFactory ScriptTagFactory { get; set; }
         public bool KeepDisplayOnRefresh { get; set; }
 
         public void Setup(TMP_TextInfo textInfo, IReadOnlyCollection<TagInfo> tags)
@@ -59,13 +62,18 @@ namespace TextEffects.Effects.Typewriter
             foreach (var modifier in _modifiers) modifier.ModifyScript(tags, _scriptInfo);
             foreach (var listener in _listeners) listener.OnScriptModify(_scriptInfo);
 
+            // ScriptTagの生成と登録
+            _scriptTags = tags
+                .Select(tagInfo => (Tag: tagInfo, ScriptTag: ScriptTagFactory.CreateTag(tagInfo)))
+                .Where(static tag => tag.ScriptTag != null)
+                .OrderBy(static tag => tag.Tag.StartIndex)
+                .ToArray();
+
+            // DisplayTagの生成と登録
             _displayTags = tags
                 .Select(DisplayTagFactory.CreateTag)
                 .Where(static tag => tag != null)
                 .ToArray();
-
-            foreach (var tag in _displayTags)
-                tag.Setup(textInfo, tags);
 
 #if UNITY_EDITOR
             if (!Application.isPlaying && isScriptCreate)
@@ -90,6 +98,8 @@ namespace TextEffects.Effects.Typewriter
 
             foreach (var tag in _displayTags)
                 tag.Release();
+            foreach (var tagPair in _scriptTags)
+                tagPair.ScriptTag.Release();
             foreach (var listener in _listeners) listener.OnRelease();
         }
 
@@ -192,6 +202,7 @@ namespace TextEffects.Effects.Typewriter
                 foreach (var listener in _listeners) listener.OnPlay();
 
                 var characterIndex = 0;
+                var scriptTagIndex = 0;
                 while (!_playCts.Token.IsCancellationRequested)
                 {
                     if (characterIndex >= _characterCount)
@@ -206,6 +217,20 @@ namespace TextEffects.Effects.Typewriter
 
                     if (scriptCharacterInfo.Delay > 0)
                         await SafeTask.Delay(TimeSpan.FromSeconds(scriptCharacterInfo.Delay), _playCts.Token);
+
+                    // ScriptTagの実行
+                    List<IScriptTag> executingTags = null;
+                    while (scriptTagIndex < _scriptTags.Length &&
+                        _scriptTags[scriptTagIndex].Tag.StartIndex <= characterIndex)
+                    {
+                        executingTags ??= new List<IScriptTag>();
+                        executingTags.Add(_scriptTags[scriptTagIndex].ScriptTag);
+                        scriptTagIndex++;
+                    }
+                    if (executingTags != null)
+                    {
+                        await SafeTask.WhenAll(executingTags.Select(tag => tag.ExecuteAsync(_playCts.Token)));
+                    }
 
                     while (IsPaused)
                         await SafeTask.WaitWhile(() => IsPaused, _playCts.Token);

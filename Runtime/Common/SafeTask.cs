@@ -1,14 +1,15 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 using System.Threading;
+using System.Collections.Generic;
+
+
 #if TEXTEFFECTS_UNITASK_SUPPORT
 #if UNITY_EDITOR
 using UnityEngine;
 using System.Threading.Tasks;
 #endif
-
 using Cysharp.Threading.Tasks;
-
 #else
 using System.Threading.Tasks;
 #endif
@@ -37,6 +38,12 @@ namespace TextEffects.Common
         {
             await UniTask.WaitWhile(predicate, cancellationToken: cancellationToken);
         }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static async UniTask WhenAll(IEnumerable<UniTask> tasks)
+        {
+            await UniTask.WhenAll(tasks);
+        }
 #else
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static async Task Delay(TimeSpan timeSpan, CancellationToken cancellationToken)
@@ -51,6 +58,12 @@ namespace TextEffects.Common
             {
                 await Task.Yield();
             }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static async Task WhenAll(IEnumerable<Task> tasks)
+        {
+            await Task.WhenAll(tasks);
         }
 #endif
     }

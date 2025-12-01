@@ -1,4 +1,7 @@
-﻿namespace TextEffects.Data
+﻿using System.Collections.Generic;
+using TextEffects.Effects.Typewriter;
+
+namespace TextEffects.Data
 {
     public class ScriptTextInfo
     {

@@ -1,17 +1,15 @@
 ﻿using System.Collections.Generic;
+using System.Threading;
+using Cysharp.Threading.Tasks;
 using TextEffects.Common;
 using TextEffects.Data;
 using TMPro;
 
-namespace TextEffects.Effects.TagStyler.StyleTags
+namespace TextEffects.Effects.Typewriter.ScriptTags
 {
-    public abstract class PooledStyleTag<T> : PooledItem<T>, IStyleTag where T : PooledStyleTag<T>, new()
+    public abstract class PooledScriptTag<T> : PooledItem<T>, IScriptTag where T : PooledScriptTag<T>, new()
     {
         protected TagInfo TagInfo { get; private set; }
-
-        public virtual void UpdateText(AnimationTextInfo animationInfo)
-        {
-        }
 
         public void Release()
         {
@@ -33,9 +31,15 @@ namespace TextEffects.Effects.TagStyler.StyleTags
         {
         }
 
-        public class Factory : IStyleTagFactory
+#if TEXTEFFECTS_UNITASK_SUPPORT
+        public abstract UniTask ExecuteAsync(CancellationToken cancellationToken = default);
+#else
+        public abstract Task ExecuteAsync(CancellationToken cancellationToken = default);
+#endif
+
+        public class Factory : IScriptTagFactory
         {
-            public IStyleTag CreateTag(TagInfo tagInfo)
+            public IScriptTag CreateTag(TagInfo tagInfo)
             {
                 var tag = Rent();
                 tag.SetTag(tagInfo);

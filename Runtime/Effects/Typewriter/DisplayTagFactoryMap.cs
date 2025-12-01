@@ -13,6 +13,11 @@ namespace TextEffects.Effects.Typewriter
             _factories = factories;
         }
 
+        public DisplayTagFactoryMap Clone()
+        {
+            return new DisplayTagFactoryMap(new Dictionary<string, IDisplayTagFactory>(_factories));
+        }
+
         public static DisplayTagFactoryMap Default { get; } = new(new Dictionary<string, IDisplayTagFactory>
         {
             { "@fade", new PooledDisplayTag<FadeShowTag>.Factory() },
@@ -41,6 +46,11 @@ namespace TextEffects.Effects.Typewriter
         public void RegisterFactory(string tagName, IDisplayTagFactory factory)
         {
             _factories.Add(tagName, factory);
+        }
+
+        public void UnregisterFactory(string tagName)
+        {
+            _factories.Remove(tagName);
         }
     }
 }

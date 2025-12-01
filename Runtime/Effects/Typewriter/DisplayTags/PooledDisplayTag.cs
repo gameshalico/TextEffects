@@ -9,10 +9,6 @@ namespace TextEffects.Effects.Typewriter.DisplayTags
     {
         protected TagInfo TagInfo { get; private set; }
 
-        public virtual void Setup(TMP_TextInfo textInfo, IReadOnlyCollection<TagInfo> tags)
-        {
-        }
-
         public virtual void UpdateText(AnimationTextInfo animationInfo, ScriptTextInfo scriptInfo)
         {
         }
