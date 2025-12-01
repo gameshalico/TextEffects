@@ -40,14 +40,16 @@ namespace TextEffects.Formatters
         /// <param name="rubyScale">Ruby text scale (0-1)</param>
         /// <param name="rubyVerticalOffset">Vertical offset in em units</param>
         /// <param name="getPreferredValues">Function to get preferred text size in pixels</param>
+        /// <param name="rubyPrefixTag">Tag to add before ruby text (optional)</param>
+        /// <param name="rubySuffixTag">Tag to add after ruby text (optional)</param>
         /// <returns>Formatted text with TMP markup</returns>
-        public static string FormatRubyText(string input, float rubyScale, float rubyVerticalOffset, GetPreferredValuesDelegate getPreferredValues)
+        public static string FormatRubyText(string input, float rubyScale, float rubyVerticalOffset, GetPreferredValuesDelegate getPreferredValues, string rubyPrefixTag = "", string rubySuffixTag = "")
         {
             return RubyRegex.Replace(input, match =>
             {
                 var rubyText = match.Groups[1].Value;
                 var baseText = match.Groups[2].Value;
-                return CreateRubyText(baseText, rubyText, rubyScale, rubyVerticalOffset, getPreferredValues);
+                return CreateRubyText(baseText, rubyText, rubyScale, rubyVerticalOffset, getPreferredValues, rubyPrefixTag, rubySuffixTag);
             });
         }
 
@@ -59,8 +61,10 @@ namespace TextEffects.Formatters
         /// <param name="rubyScale">Ruby text scale (0-1)</param>
         /// <param name="rubyVerticalOffset">Vertical offset in em units</param>
         /// <param name="getPreferredValues">Function to get preferred text size in pixels</param>
+        /// <param name="rubyPrefixTag">Tag to add before ruby text (optional)</param>
+        /// <param name="rubySuffixTag">Tag to add after ruby text (optional)</param>
         /// <returns>Formatted ruby text markup</returns>
-        public static string CreateRubyText(string baseText, string rubyText, float rubyScale, float rubyVerticalOffset, GetPreferredValuesDelegate getPreferredValues)
+        public static string CreateRubyText(string baseText, string rubyText, float rubyScale, float rubyVerticalOffset, GetPreferredValuesDelegate getPreferredValues, string rubyPrefixTag = "", string rubySuffixTag = "")
         {
             var rubyScalePercent = rubyScale * 100f;
 
@@ -102,8 +106,8 @@ namespace TextEffects.Formatters
             var finalSpace = totalWidth - rubyOffset - actualRubyWidth;
             var backSpace = -(baseOffset + baseWidth);
 
-            // Build the markup using pixel units
-            return $"<nobr><space={baseOffset}px>{baseText}<space={backSpace}px><space={rubyOffset}px><voffset={rubyVerticalOffset}em><size={rubyScalePercent}%>{formattedRubyText}</size></voffset><space={finalSpace}px></nobr>";
+            // Build the markup using pixel units with optional prefix/suffix tags
+            return $"<nobr><space={baseOffset}px>{baseText}<space={backSpace}px><space={rubyOffset}px><voffset={rubyVerticalOffset}em><size={rubyScalePercent}%>{rubyPrefixTag}{formattedRubyText}{rubySuffixTag}</size></voffset><space={finalSpace}px></nobr>";
         }
     }
 }

@@ -12,6 +12,8 @@ namespace TextEffects.Formatters
         [SerializeField] private int _order;
         [SerializeField] [Range(0f, 1f)] private float _rubyScale = 0.5f;
         [SerializeField] private float _rubyVerticalOffset = 1f;
+        [SerializeField] private string _rubyPrefixTag = "";
+        [SerializeField] private string _rubySuffixTag = "";
         private TMP_Text _textComponent;
 
         private void Awake()
@@ -41,6 +43,26 @@ namespace TextEffects.Formatters
             }
         }
 
+        public string RubyPrefixTag
+        {
+            get => _rubyPrefixTag;
+            set
+            {
+                _rubyPrefixTag = value;
+                SetDirty();
+            }
+        }
+
+        public string RubySuffixTag
+        {
+            get => _rubySuffixTag;
+            set
+            {
+                _rubySuffixTag = value;
+                SetDirty();
+            }
+        }
+
         private void OnValidate()
         {
             _rubyScale = Mathf.Clamp01(_rubyScale);
@@ -53,7 +75,7 @@ namespace TextEffects.Formatters
                 _textComponent = GetComponent<TMP_Text>();
 
             return RubyTextHelper.FormatRubyText(input, _rubyScale, _rubyVerticalOffset,
-                text => _textComponent.GetPreferredValues(text));
+                text => _textComponent.GetPreferredValues(text), _rubyPrefixTag, _rubySuffixTag);
         }
     }
 }
