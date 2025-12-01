@@ -1,0 +1,109 @@
+using System.Text.RegularExpressions;
+using UnityEngine;
+
+namespace TextEffects.Formatters
+{
+    /// <summary>
+    /// Ruby text formatting helper for TextEffects
+    /// </summary>
+    public static class RubyTextHelper
+    {
+        private static Regex _rubyRegex;
+
+        /// <summary>
+        /// Delegate for getting preferred text size
+        /// </summary>
+        /// <param name="text">Text to measure</param>
+        /// <returns>Preferred width and height</returns>
+        public delegate Vector2 GetPreferredValuesDelegate(string text);
+
+        /// <summary>
+        /// Gets or creates the cached regex for ruby text matching
+        /// Pattern: &lt;r="rubyText"&gt;baseText&lt;/r&gt; or &lt;r=rubyText&gt;baseText&lt;/r&gt;
+        /// </summary>
+        public static Regex RubyRegex
+        {
+            get
+            {
+                if (_rubyRegex == null)
+                {
+                    _rubyRegex = new Regex(@"<r=""?([^"">]+)""?>([^<]+)</r>", RegexOptions.Compiled);
+                }
+                return _rubyRegex;
+            }
+        }
+
+        /// <summary>
+        /// Formats input text by converting ruby tags to TextMeshPro markup
+        /// </summary>
+        /// <param name="input">Input text with ruby tags</param>
+        /// <param name="rubyScale">Ruby text scale (0-1)</param>
+        /// <param name="rubyVerticalOffset">Vertical offset in em units</param>
+        /// <param name="getPreferredValues">Function to get preferred text size in pixels</param>
+        /// <returns>Formatted text with TMP markup</returns>
+        public static string FormatRubyText(string input, float rubyScale, float rubyVerticalOffset, GetPreferredValuesDelegate getPreferredValues)
+        {
+            return RubyRegex.Replace(input, match =>
+            {
+                var rubyText = match.Groups[1].Value;
+                var baseText = match.Groups[2].Value;
+                return CreateRubyText(baseText, rubyText, rubyScale, rubyVerticalOffset, getPreferredValues);
+            });
+        }
+
+        /// <summary>
+        /// Creates ruby text markup for TextMeshPro
+        /// </summary>
+        /// <param name="baseText">Base text (kanji)</param>
+        /// <param name="rubyText">Ruby text (furigana)</param>
+        /// <param name="rubyScale">Ruby text scale (0-1)</param>
+        /// <param name="rubyVerticalOffset">Vertical offset in em units</param>
+        /// <param name="getPreferredValues">Function to get preferred text size in pixels</param>
+        /// <returns>Formatted ruby text markup</returns>
+        public static string CreateRubyText(string baseText, string rubyText, float rubyScale, float rubyVerticalOffset, GetPreferredValuesDelegate getPreferredValues)
+        {
+            var rubyScalePercent = rubyScale * 100f;
+
+            // Get actual text widths in pixels from TextMeshPro
+            var baseSize = getPreferredValues(baseText);
+            var rubySize = getPreferredValues(rubyText);
+
+            float baseWidth = baseSize.x;
+            float rubyWidth = rubySize.x * rubyScale;
+
+            // Layout strategy: Center both base and ruby within the total width
+            float actualRubyWidth = rubyWidth;
+            string formattedRubyText;
+
+            // When ruby is shorter than base, use cspace to distribute ruby characters evenly
+            if (rubyWidth < baseWidth && rubyText.Length > 1)
+            {
+                // Calculate character spacing to make ruby fill the base width
+                // totalExtraSpace: the space we need to add between characters
+                var totalExtraSpace = baseWidth - rubyWidth;
+
+                // Distribute the extra space evenly between character gaps
+                var cspacePerGap = totalExtraSpace / (rubyText.Length - 1);
+
+                formattedRubyText = $"<cspace={cspacePerGap}px>{rubyText}</cspace>";
+                actualRubyWidth = baseWidth;
+            }
+            else
+            {
+                formattedRubyText = rubyText;
+            }
+
+            // Calculate offsets for centering (in pixels)
+            var baseOffset = Mathf.Max(0f, (actualRubyWidth - baseWidth) * 0.5f);
+            var rubyOffset = Mathf.Max(0f, (baseWidth - actualRubyWidth) * 0.5f);
+            var totalWidth = Mathf.Max(baseWidth, actualRubyWidth);
+
+            // After rendering ruby, cursor is at: rubyOffset + actualRubyWidth
+            var finalSpace = totalWidth - rubyOffset - actualRubyWidth;
+            var backSpace = -(baseOffset + baseWidth);
+
+            // Build the markup using pixel units
+            return $"<nobr><space={baseOffset}px>{baseText}<space={backSpace}px><space={rubyOffset}px><voffset={rubyVerticalOffset}em><size={rubyScalePercent}%>{formattedRubyText}</size></voffset><space={finalSpace}px></nobr>";
+        }
+    }
+}
