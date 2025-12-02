@@ -39,30 +39,21 @@ namespace TextEffects.Core
             {
                 var formattedText = text;
 
-                // BeforeParsing フォーマッターを適用
-                foreach (var formatter in _formatters
-                    .OrderBy(f => f.FormatOrder))
+                // フォーマッターを適用
+                foreach (var formatter in _formatters.OrderBy(f => f.FormatOrder))
                 {
                     formattedText = formatter.FormatText(formattedText);
                 }
 
                 var parseResults = TagParser.Parse(formattedText, _textEffector._unescapeXml);
 
-                // AfterParsing フォーマッターを適用
-                var tmpText = parseResults.tmpText;
-                foreach (var formatter in _formatters
-                    .OrderBy(f => f.FormatOrder))
-                {
-                    tmpText = formatter.FormatText(tmpText);
-                }
-
                 if (_prevStringHash != formattedText.GetHashCode())
                 {
-                    _textEffector._animationHandler.SetTags(parseResults.tags);
+                    _textEffector._animationHandler.SetTags(parseResults.Tags);
                 }
                 _prevStringHash = formattedText.GetHashCode();
 
-                return tmpText;
+                return parseResults.Text;
             }
 
             public void AddFormatter(ITextFormatter formatter)

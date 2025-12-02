@@ -25,7 +25,7 @@ namespace TextEffects.Core
         };
 
 
-        public static (string tmpText, TagInfo[] tags) Parse(string input, bool unescapeXml = false)
+        public static (string Text, TagInfo[] Tags) Parse(string input, bool unescapeXml = false)
         {
             var tags = new LinkedList<TagInfoBuffer>();
             var stack = new Stack<TagInfoBuffer>();

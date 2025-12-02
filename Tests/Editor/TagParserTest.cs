@@ -142,7 +142,7 @@ namespace TextEffects.Editor.Tests.Tests.Editor
 
             var result = TagParser.Parse(text, unescapeXml: true);
 
-            Assert.AreEqual(expectedText, result.tmpText);
+            Assert.AreEqual(expectedText, result.Text);
         }
 
         [Test]
@@ -158,11 +158,11 @@ namespace TextEffects.Editor.Tests.Tests.Editor
 
             var result = TagParser.Parse(text, unescapeXml: true);
 
-            Assert.AreEqual(expectedText, result.tmpText);
-            Assert.AreEqual(expectedTags.Length, result.tags.Length);
-            Assert.AreEqual(expectedTags[0].TagName, result.tags[0].TagName);
-            Assert.AreEqual(expectedTags[0].StartIndex, result.tags[0].StartIndex);
-            Assert.AreEqual(expectedTags[0].EndIndex, result.tags[0].EndIndex);
+            Assert.AreEqual(expectedText, result.Text);
+            Assert.AreEqual(expectedTags.Length, result.Tags.Length);
+            Assert.AreEqual(expectedTags[0].TagName, result.Tags[0].TagName);
+            Assert.AreEqual(expectedTags[0].StartIndex, result.Tags[0].StartIndex);
+            Assert.AreEqual(expectedTags[0].EndIndex, result.Tags[0].EndIndex);
         }
 
         [Test]
@@ -173,7 +173,7 @@ namespace TextEffects.Editor.Tests.Tests.Editor
 
             var result = TagParser.Parse(text, unescapeXml: false);
 
-            Assert.AreEqual(expectedText, result.tmpText);
+            Assert.AreEqual(expectedText, result.Text);
         }
 
         [Test]
@@ -184,15 +184,15 @@ namespace TextEffects.Editor.Tests.Tests.Editor
 
             var result = TagParser.Parse(text, unescapeXml: true);
 
-            Assert.AreEqual(expectedText, result.tmpText);
+            Assert.AreEqual(expectedText, result.Text);
         }
 
         private static void TestParse(string text, string expectedText, TagInfo[] expectedTags)
         {
             var result = TagParser.Parse(text);
 
-            Assert.AreEqual(expectedText, result.tmpText);
-            Assert.AreEqual(expectedTags, result.tags);
+            Assert.AreEqual(expectedText, result.Text);
+            Assert.AreEqual(expectedTags, result.Tags);
         }
     }
 }
