@@ -1,3 +1,4 @@
+using System.Text;
 using System.Text.RegularExpressions;
 using UnityEngine;
 
@@ -19,7 +20,7 @@ namespace TextEffects.Formatters
 
         /// <summary>
         /// Gets or creates the cached regex for ruby text matching
-        /// Pattern: &lt;r="rubyText"&gt;baseText&lt;/r&gt; or &lt;r=rubyText&gt;baseText&lt;/r&gt;
+        /// Pattern: &lt;r="rubyText"&gt;baseText&lt;/r&gt;, &lt;r='rubyText'&gt;baseText&lt;/r&gt;, or &lt;r=rubyText&gt;baseText&lt;/r&gt;
         /// </summary>
         public static Regex RubyRegex
         {
@@ -27,7 +28,9 @@ namespace TextEffects.Formatters
             {
                 if (_rubyRegex == null)
                 {
-                    _rubyRegex = new Regex(@"<r=""?([^"">]+)""?>([^<]+)</r>", RegexOptions.Compiled);
+                    // 文字リテラル対応: ""または''で囲まれた値、またはスペースと>以外の文字列
+                    // 引用符内の>を許容するように修正
+                    _rubyRegex = new Regex(@"<r=(?:""(?<ruby1>(?:[^""\\]|\\.)*)""|'(?<ruby2>(?:[^'\\]|\\.)*)'|(?<ruby3>[^\s>]+))>(?<base>[^<]+)</r>", RegexOptions.Compiled);
                 }
                 return _rubyRegex;
             }
@@ -47,8 +50,15 @@ namespace TextEffects.Formatters
         {
             return RubyRegex.Replace(input, match =>
             {
-                var rubyText = match.Groups[1].Value;
-                var baseText = match.Groups[2].Value;
+                // 3つの名前付きグループのいずれかからルビテキストを取得
+                var rubyText = match.Groups["ruby1"].Success ? match.Groups["ruby1"].Value :
+                               match.Groups["ruby2"].Success ? match.Groups["ruby2"].Value :
+                               match.Groups["ruby3"].Value;
+
+                // エスケープシーケンスを解除
+                rubyText = UnescapeValue(rubyText);
+
+                var baseText = match.Groups["base"].Value;
                 return CreateRubyText(baseText, rubyText, rubyScale, rubyVerticalOffset, getPreferredValues, rubyPrefixTag, rubySuffixTag);
             });
         }
@@ -108,6 +118,53 @@ namespace TextEffects.Formatters
 
             // Build the markup using pixel units with optional prefix/suffix tags
             return $"<nobr><space={baseOffset}px>{baseText}<space={backSpace}px><space={rubyOffset}px><voffset={rubyVerticalOffset}em><size={rubyScalePercent}%>{rubyPrefixTag}{formattedRubyText}{rubySuffixTag}</size></voffset><space={finalSpace}px></nobr>";
+        }
+
+        /// <summary>
+        /// エスケープシーケンスを解除します
+        /// </summary>
+        private static string UnescapeValue(string value)
+        {
+            if (string.IsNullOrEmpty(value))
+                return value;
+
+            var result = new StringBuilder(value.Length);
+            for (int i = 0; i < value.Length; i++)
+            {
+                if (value[i] == '\\' && i + 1 < value.Length)
+                {
+                    // エスケープされた文字
+                    i++;
+                    switch (value[i])
+                    {
+                        case 'n':
+                            result.Append('\n');
+                            break;
+                        case 'r':
+                            result.Append('\r');
+                            break;
+                        case 't':
+                            result.Append('\t');
+                            break;
+                        case '\\':
+                        case '"':
+                        case '\'':
+                        case '>':
+                            result.Append(value[i]);
+                            break;
+                        default:
+                            // 未知のエスケープシーケンスはそのまま
+                            result.Append('\\');
+                            result.Append(value[i]);
+                            break;
+                    }
+                }
+                else
+                {
+                    result.Append(value[i]);
+                }
+            }
+            return result.ToString();
         }
     }
 }

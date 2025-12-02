@@ -55,6 +55,85 @@ namespace TextEffects.Editor.Tests.Tests.Editor
             TestParse(text, expectedText, expectedTags);
         }
 
+        [Test]
+        public void DoubleQuotedAttributeTest()
+        {
+            var text = "<test attr=\"value with spaces\">Content</test>";
+            var expectedText = "Content";
+            var expectedTags = new[]
+            {
+                TagInfo.Create("test", new Dictionary<string, string> { ["attr"] = "value with spaces" }, 0, 7, false)
+            };
+
+            TestParse(text, expectedText, expectedTags);
+        }
+
+        [Test]
+        public void SingleQuotedAttributeTest()
+        {
+            var text = "<test attr='value with spaces'>Content</test>";
+            var expectedText = "Content";
+            var expectedTags = new[]
+            {
+                TagInfo.Create("test", new Dictionary<string, string> { ["attr"] = "value with spaces" }, 0, 7, false)
+            };
+
+            TestParse(text, expectedText, expectedTags);
+        }
+
+        [Test]
+        public void AttributeWithClosingBracketTest()
+        {
+            var text = "<test attr=\"value>with>brackets\">Content</test>";
+            var expectedText = "Content";
+            var expectedTags = new[]
+            {
+                TagInfo.Create("test", new Dictionary<string, string> { ["attr"] = "value>with>brackets" }, 0, 7, false)
+            };
+
+            TestParse(text, expectedText, expectedTags);
+        }
+
+        [Test]
+        public void EscapedQuotesTest()
+        {
+            var text = "<test attr=\"value\\\"with\\\"quotes\">Content</test>";
+            var expectedText = "Content";
+            var expectedTags = new[]
+            {
+                TagInfo.Create("test", new Dictionary<string, string> { ["attr"] = "value\"with\"quotes" }, 0, 7, false)
+            };
+
+            TestParse(text, expectedText, expectedTags);
+        }
+
+        [Test]
+        public void EscapedBackslashTest()
+        {
+            var text = "<test attr=\"value\\\\with\\\\backslash\">Content</test>";
+            var expectedText = "Content";
+            var expectedTags = new[]
+            {
+                TagInfo.Create("test", new Dictionary<string, string> { ["attr"] = "value\\with\\backslash" }, 0, 7, false)
+            };
+
+            TestParse(text, expectedText, expectedTags);
+        }
+
+        [Test]
+        public void BackwardCompatibilityTest()
+        {
+            // 従来の引用符なし形式も引き続き動作することを確認
+            var text = "<test attr=simplevalue>Content</test>";
+            var expectedText = "Content";
+            var expectedTags = new[]
+            {
+                TagInfo.Create("test", new Dictionary<string, string> { ["attr"] = "simplevalue" }, 0, 7, false)
+            };
+
+            TestParse(text, expectedText, expectedTags);
+        }
+
         private static void TestParse(string text, string expectedText, TagInfo[] expectedTags)
         {
             var result = TagParser.Parse(text);
