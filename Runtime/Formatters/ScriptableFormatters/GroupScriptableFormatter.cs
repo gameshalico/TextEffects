@@ -2,7 +2,7 @@
 using System.Linq;
 using UnityEngine;
 
-namespace TextEffects.Formatters.ScriptableFormatters
+namespace TextEffects.Formatters
 {
     [CreateAssetMenu(fileName = "Group Scriptable Formatter",
         menuName = "Text Effects/Formatters/Group Scriptable Formatter")]

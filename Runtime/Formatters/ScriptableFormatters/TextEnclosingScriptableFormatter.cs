@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace TextEffects.Formatters.ScriptableFormatters
+namespace TextEffects.Formatters
 {
     [CreateAssetMenu(fileName = "Text Enclosing Formatter",
         menuName = "Text Effects/Formatters/Text Enclosing Formatter")]

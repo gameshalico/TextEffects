@@ -25,7 +25,7 @@ namespace TextEffects.Core
         };
 
 
-        public static (string tmpText, TagInfo[] tags) Parse(string input)
+        public static (string tmpText, TagInfo[] tags) Parse(string input, bool unescapeXml = false)
         {
             var tags = new LinkedList<TagInfoBuffer>();
             var stack = new Stack<TagInfoBuffer>();
@@ -36,6 +36,7 @@ namespace TextEffects.Core
 
             var isNoParse = false;
             var ignoreTagLength = 0;
+            var unescapedLengthDiff = 0; // エスケープ解除による文字数の減少量
 
             foreach (Match match in TagRegex.Matches(input))
             {
@@ -61,22 +62,31 @@ namespace TextEffects.Core
                     continue;
                 }
 
-                var tagNextCharIndex = match.Index - ignoreTagLength;
-                ignoreTagLength += match.Length;
-
                 if (tagName == "br")
                 {
+                    ignoreTagLength += match.Length;
                     ignoreTagLength -= 1;
                     continue;
                 }
 
                 if (TMPTags.Contains(tagName))
                 {
+                    ignoreTagLength += match.Length;
                     continue;
                 }
 
-                tmpTextBuilder.Append(input.Substring(lastAddedIndex, match.Index - lastAddedIndex));
+                var textSegment = input.Substring(lastAddedIndex, match.Index - lastAddedIndex);
+                var originalSegmentLength = textSegment.Length;
+                if (unescapeXml)
+                {
+                    textSegment = UnescapeXmlInText(textSegment);
+                    unescapedLengthDiff += originalSegmentLength - textSegment.Length;
+                }
+                tmpTextBuilder.Append(textSegment);
                 lastAddedIndex = match.Index + match.Length;
+
+                var tagNextCharIndex = match.Index - ignoreTagLength - unescapedLengthDiff;
+                ignoreTagLength += match.Length;
 
                 if (isClosingTag) // Closing tag
                 {
@@ -118,9 +128,16 @@ namespace TextEffects.Core
                 tags.AddLast(tagInfo);
             }
 
-            tmpTextBuilder.Append(input.Substring(lastAddedIndex));
+            var finalSegment = input.Substring(lastAddedIndex);
+            var originalFinalLength = finalSegment.Length;
+            if (unescapeXml)
+            {
+                finalSegment = UnescapeXmlInText(finalSegment);
+                unescapedLengthDiff += originalFinalLength - finalSegment.Length;
+            }
+            tmpTextBuilder.Append(finalSegment);
 
-            var lastIndex = input.Length - ignoreTagLength;
+            var lastIndex = input.Length - ignoreTagLength - unescapedLengthDiff;
             foreach (var tagInfo in tags)
             {
                 if (tagInfo.IsEmptyTag)
@@ -137,6 +154,73 @@ namespace TextEffects.Core
             }
 
             return (tmpTextBuilder.ToString(), tagInfos);
+        }
+
+        /// <summary>
+        /// テキスト内のXMLエスケープシーケンスを解除します
+        /// </summary>
+        private static string UnescapeXmlInText(string text)
+        {
+            if (string.IsNullOrEmpty(text))
+                return text;
+
+            var sb = new StringBuilder(text.Length);
+            var i = 0;
+
+            while (i < text.Length)
+            {
+                if (text[i] == '&')
+                {
+                    // &lt; -> <
+                    if (i + 3 < text.Length && text.Substring(i, 4) == "&lt;")
+                    {
+                        sb.Append('<');
+                        i += 4;
+                    }
+                    // &gt; -> >
+                    else if (i + 3 < text.Length && text.Substring(i, 4) == "&gt;")
+                    {
+                        sb.Append('>');
+                        i += 4;
+                    }
+                    // &amp; -> &
+                    else if (i + 4 < text.Length && text.Substring(i, 5) == "&amp;")
+                    {
+                        sb.Append('&');
+                        i += 5;
+                    }
+                    // &quot; -> "
+                    else if (i + 5 < text.Length && text.Substring(i, 6) == "&quot;")
+                    {
+                        sb.Append('"');
+                        i += 6;
+                    }
+                    // &#39; -> '
+                    else if (i + 4 < text.Length && text.Substring(i, 5) == "&#39;")
+                    {
+                        sb.Append('\'');
+                        i += 5;
+                    }
+                    // &nbsp; -> 空白文字
+                    else if (i + 5 < text.Length && text.Substring(i, 6) == "&nbsp;")
+                    {
+                        sb.Append('\u00A0'); // Non-breaking space
+                        i += 6;
+                    }
+                    else
+                    {
+                        sb.Append(text[i]);
+                        i++;
+                    }
+                }
+                else
+                {
+                    sb.Append(text[i]);
+                    i++;
+                }
+            }
+
+            return sb.ToString();
         }
 
         // Parse attributes from string

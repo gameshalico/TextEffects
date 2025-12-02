@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using UnityEngine;
 
-namespace TextEffects.Formatters.ScriptableFormatters
+namespace TextEffects.Formatters
 {
     [CreateAssetMenu(fileName = "Tag Replace Formatter", menuName = "Text Effects/Formatters/Tag Replace Formatter")]
     public sealed class TagReplaceScriptableFormatter : ScriptableFormatter

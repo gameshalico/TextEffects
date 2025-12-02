@@ -1,5 +1,5 @@
 ﻿using TextEffects.Core;
-using TextEffects.Formatters.ScriptableFormatters;
+using TextEffects.Formatters;
 using UnityEngine;
 
 namespace TextEffects.Formatters

@@ -11,7 +11,6 @@ namespace TextEffects.Formatters
         [SerializeField] private int _order;
         [TextArea] [SerializeField] private string _preText;
         [TextArea] [SerializeField] private string _postText;
-
         public string PreText
         {
             get => _preText;

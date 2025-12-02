@@ -38,12 +38,23 @@ namespace TextEffects.Core
             public string PreprocessText(string text)
             {
                 var formattedText = text;
-                foreach (var formatter in _formatters.OrderBy(f => f.FormatOrder))
+
+                // BeforeParsing フォーマッターを適用
+                foreach (var formatter in _formatters
+                    .OrderBy(f => f.FormatOrder))
                 {
                     formattedText = formatter.FormatText(formattedText);
                 }
 
-                var parseResults = TagParser.Parse(formattedText);
+                var parseResults = TagParser.Parse(formattedText, _textEffector._unescapeXml);
+
+                // AfterParsing フォーマッターを適用
+                var tmpText = parseResults.tmpText;
+                foreach (var formatter in _formatters
+                    .OrderBy(f => f.FormatOrder))
+                {
+                    tmpText = formatter.FormatText(tmpText);
+                }
 
                 if (_prevStringHash != formattedText.GetHashCode())
                 {
@@ -51,7 +62,7 @@ namespace TextEffects.Core
                 }
                 _prevStringHash = formattedText.GetHashCode();
 
-                return parseResults.tmpText;
+                return tmpText;
             }
 
             public void AddFormatter(ITextFormatter formatter)

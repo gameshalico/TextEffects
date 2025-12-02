@@ -134,6 +134,59 @@ namespace TextEffects.Editor.Tests.Tests.Editor
             TestParse(text, expectedText, expectedTags);
         }
 
+        [Test]
+        public void XmlUnescapeTest()
+        {
+            var text = "012&lt;test&gt;345&amp;678";
+            var expectedText = "012<test>345&678";
+
+            var result = TagParser.Parse(text, unescapeXml: true);
+
+            Assert.AreEqual(expectedText, result.tmpText);
+        }
+
+        [Test]
+        public void XmlUnescapeWithTagsTest()
+        {
+            var text = "&lt;bold&gt;<test>Hello&amp;World</test>&lt;/bold&gt;";
+            var expectedText = "<bold>Hello&World</bold>";
+
+            var expectedTags = new[]
+            {
+                TagInfo.Create("test", new Dictionary<string, string>(), 6, 17, false)
+            };
+
+            var result = TagParser.Parse(text, unescapeXml: true);
+
+            Assert.AreEqual(expectedText, result.tmpText);
+            Assert.AreEqual(expectedTags.Length, result.tags.Length);
+            Assert.AreEqual(expectedTags[0].TagName, result.tags[0].TagName);
+            Assert.AreEqual(expectedTags[0].StartIndex, result.tags[0].StartIndex);
+            Assert.AreEqual(expectedTags[0].EndIndex, result.tags[0].EndIndex);
+        }
+
+        [Test]
+        public void XmlUnescapeDisabledTest()
+        {
+            var text = "012&lt;test&gt;345&amp;678";
+            var expectedText = "012&lt;test&gt;345&amp;678";
+
+            var result = TagParser.Parse(text, unescapeXml: false);
+
+            Assert.AreEqual(expectedText, result.tmpText);
+        }
+
+        [Test]
+        public void XmlUnescapeAllEntitiesTest()
+        {
+            var text = "&lt;&gt;&amp;&quot;&#39;&nbsp;";
+            var expectedText = "<>&\"'\u00A0";
+
+            var result = TagParser.Parse(text, unescapeXml: true);
+
+            Assert.AreEqual(expectedText, result.tmpText);
+        }
+
         private static void TestParse(string text, string expectedText, TagInfo[] expectedTags)
         {
             var result = TagParser.Parse(text);
