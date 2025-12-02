@@ -1,6 +1,6 @@
 namespace TextEffects.Core
 {
-    public class TextInfo
+    public sealed class TextInfo
     {
         public int CharacterCount { get; set; }
     }
