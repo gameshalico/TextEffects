@@ -8,6 +8,30 @@ namespace TextEffects.Effects.Typewriter.Modifiers
     {
         public void ModifyScript(IReadOnlyCollection<TagInfo> tags, ScriptTextInfo scriptInfo)
         {
+            // delay
+            foreach (var tag in tags.Where(tag => tag.TagName == "d" || tag.TagName == "delay"))
+            {
+                var delay = tag.GetFloat("", 0.5f);
+
+                if (tag.IsEmptyTag)
+                {
+                    if (tag.StartIndex >= scriptInfo.ScriptCharacterInfo.Length)
+                    {
+                        scriptInfo.LastDelay = delay;
+                    }
+                    else
+                    {
+                        scriptInfo.ScriptCharacterInfo[tag.StartIndex].Delay = delay;
+                    }
+                    continue;
+                }
+
+                for (var i = tag.StartIndex; i < tag.EndIndex; i++)
+                {
+                    scriptInfo.ScriptCharacterInfo[i].Delay = delay;
+                }
+            }
+
             // delay rate
             foreach (var tag in tags.Where(tag => tag.TagName == "dr" || tag.TagName == "delay-rate"))
             {
@@ -22,22 +46,6 @@ namespace TextEffects.Effects.Typewriter.Modifiers
 
                 for (var i = tag.StartIndex; i < tag.EndIndex; i++)
                     scriptInfo.ScriptCharacterInfo[i].Delay *= delayRate;
-            }
-
-            // delay
-            foreach (var tag in tags.Where(tag => tag.TagName == "d" || tag.TagName == "delay"))
-            {
-                var delay = tag.GetFloat("", 0.2f);
-
-                if (tag.IsEmptyTag)
-                {
-                    if (tag.StartIndex >= scriptInfo.ScriptCharacterInfo.Length) scriptInfo.LastDelay += delay;
-                    else
-                        scriptInfo.ScriptCharacterInfo[tag.StartIndex].Delay += delay;
-                    continue;
-                }
-
-                for (var i = tag.StartIndex; i < tag.EndIndex; i++) scriptInfo.ScriptCharacterInfo[i].Delay += delay;
             }
         }
     }

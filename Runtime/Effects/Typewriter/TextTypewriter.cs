@@ -64,7 +64,9 @@ namespace TextEffects.Effects.Typewriter
             {
                 _keepDisplayOnRefresh = value;
                 if (_typewriterEffect != null)
+                {
                     _typewriterEffect.KeepDisplayOnRefresh = value;
+                }
             }
         }
 
