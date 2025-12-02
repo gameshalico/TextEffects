@@ -98,7 +98,7 @@ namespace TextEffects.Formatters
                 _textComponent = GetComponent<TMP_Text>();
 
             var formatted = RubyTextHelper.FormatRubyText(input, _rubyScale, _rubyVerticalOffset,
-                text => _textComponent.GetPreferredValues(text), _rubyPrefixTag, _rubySuffixTag);
+                text => _textComponent.GetPreferredValues(text), _rubyPrefixTag, _rubySuffixTag, Effector.UnescapeXml);
 
             // 固定行の高さを適用
             if (_fixedLineHeight)
