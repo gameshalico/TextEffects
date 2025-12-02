@@ -22,15 +22,21 @@ namespace TextEffects.Editor
                 EditorGUILayout.PropertyField(defaultDelay);
 
                 if (EditorGUI.EndChangeCheck())
+                {
                     serializedObject.ApplyModifiedProperties();
+                }
             }
 
             using (new GUILayout.HorizontalScope())
             {
                 if (GUILayout.Button("Play"))
+                {
                     textTypewriter.PlayScript();
+                }
                 if (GUILayout.Button("Reset"))
+                {
                     textTypewriter.ResetScript();
+                }
             }
         }
     }

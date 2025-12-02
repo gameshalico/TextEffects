@@ -17,7 +17,9 @@ namespace TextEffects.Common
         public void Return()
         {
             if (!IsValid)
+            {
                 throw new InvalidOperationException("Handle is invalid");
+            }
             PooledItem<TItem>.Return((TItem)_item);
         }
 
@@ -27,7 +29,9 @@ namespace TextEffects.Common
             get
             {
                 if (IsValid)
+                {
                     return (TItem)_item;
+                }
 
                 throw new InvalidOperationException("Handle is invalid");
             }

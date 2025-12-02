@@ -31,8 +31,11 @@ namespace TextEffects.Editor
             _types = new Dictionary<int, Type>();
 
             foreach (var type in attributeTypes)
+            {
                 if (type.GetCustomAttributes(typeof(AddEffectorFeatureMenuAttribute), false) is
                     AddEffectorFeatureMenuAttribute[] attributes)
+                {
+                    
                     foreach (var attribute in attributes)
                     {
                         var path = attribute.MenuPath.Split('/');
@@ -43,12 +46,14 @@ namespace TextEffects.Editor
 
                             var found = false;
                             foreach (var child in parent.children)
+                            {
                                 if (child.name == pathItem)
                                 {
                                     parent = child;
                                     found = true;
                                     break;
                                 }
+                            }
 
                             if (!found)
                             {
@@ -65,6 +70,8 @@ namespace TextEffects.Editor
                             }
                         }
                     }
+                }
+            }
 
             return root;
         }

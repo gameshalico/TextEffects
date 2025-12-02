@@ -42,12 +42,16 @@ namespace TextEffects.Common
         public static void Return(T item)
         {
             if (item._next != null)
+            {
                 throw new InvalidOperationException("The item is already in the pool.");
+            }
             item.OnReturn();
 
             item.Version++;
             if (item.Version == ushort.MaxValue)
+            {
                 return;
+            }
 
             item._next = s_poolRoot;
             s_poolRoot = item;
