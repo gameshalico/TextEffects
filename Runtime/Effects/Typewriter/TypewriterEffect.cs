@@ -5,7 +5,6 @@ using System.Threading;
 using TextEffects.Common;
 using TextEffects.Core;
 using TextEffects.Data;
-using TMPro;
 #if UNITY_EDITOR
 using UnityEngine;
 
@@ -39,28 +38,40 @@ namespace TextEffects.Effects.Typewriter
         }
 
         public bool IsPaused { get; private set; }
-
         public IDisplayTagFactory DisplayTagFactory { get; set; }
         public IScriptTagFactory ScriptTagFactory { get; set; }
         public bool KeepDisplayOnRefresh { get; set; }
 
-        public void Setup(TMP_TextInfo textInfo, IReadOnlyCollection<TagInfo> tags)
+        public void Setup(TextInfo textInfo, IReadOnlyCollection<TagInfo> tags)
         {
-            foreach (var listener in _listeners) listener.OnSetup(textInfo, tags);
+            foreach (var listener in _listeners)
+            {
+                listener.OnSetupCompleted(textInfo, tags);
+            }
 
-            _characterCount = textInfo.characterCount;
+            _characterCount = textInfo.CharacterCount;
 
 #if UNITY_EDITOR
             var isScriptCreate = !KeepDisplayOnRefresh || _scriptInfo == null;
 #endif
 
             if (!KeepDisplayOnRefresh || _scriptInfo == null)
+            {
                 _scriptInfo = new ScriptTextInfo(_characterCount);
+            }
             else
+            {
                 _scriptInfo.Resize(_characterCount);
+            }
 
-            foreach (var modifier in _modifiers) modifier.ModifyScript(tags, _scriptInfo);
-            foreach (var listener in _listeners) listener.OnScriptModify(_scriptInfo);
+            foreach (var modifier in _modifiers)
+            {
+                modifier.ModifyScript(tags, _scriptInfo);
+            }
+            foreach (var listener in _listeners)
+            {
+                listener.OnScriptModified(_scriptInfo);
+            }
 
             // ScriptTagの生成と登録
             _scriptTags = tags
@@ -77,30 +88,45 @@ namespace TextEffects.Effects.Typewriter
 
 #if UNITY_EDITOR
             if (!Application.isPlaying && isScriptCreate)
+            {
                 PlayScriptLoop(default).ForgetSafe();
+            }
 #endif
         }
 
         public void UpdateText(AnimationTextInfo animationInfo)
         {
             foreach (var tag in _displayTags)
+            {
                 tag.UpdateText(animationInfo, _scriptInfo);
+            }
         }
 
         public void Release()
         {
 #if UNITY_EDITOR
             if (!KeepDisplayOnRefresh)
+            {
                 _loopCts?.Cancel();
+            }
 #endif
             if (!KeepDisplayOnRefresh)
+            {
                 _playCts?.Cancel();
+            }
 
             foreach (var tag in _displayTags)
+            {
                 tag.Release();
+            }
             foreach (var tagPair in _scriptTags)
+            {
                 tagPair.ScriptTag.Release();
-            foreach (var listener in _listeners) listener.OnRelease();
+            }
+            foreach (var listener in _listeners)
+            {
+                listener.OnReleased();
+            }
         }
 
         public void AddModifier(IScriptModifier modifier)
@@ -127,12 +153,17 @@ namespace TextEffects.Effects.Typewriter
         {
             var scriptCharacterInfo = _scriptInfo.ScriptCharacterInfo[index];
             if (scriptCharacterInfo.IsShown)
+            {
                 return;
+            }
 
             scriptCharacterInfo.Show(skipAnimation);
             _scriptInfo.ScriptCharacterInfo[index] = scriptCharacterInfo;
 
-            foreach (var listener in _listeners) listener.OnCharacterShow(index);
+            foreach (var listener in _listeners)
+            {
+                listener.OnCharacterShown(index);
+            }
         }
 
         public void HideAt(int index, bool skipAnimation = false)
@@ -144,7 +175,10 @@ namespace TextEffects.Effects.Typewriter
             scriptCharacterInfo.Hide(skipAnimation);
             _scriptInfo.ScriptCharacterInfo[index] = scriptCharacterInfo;
 
-            foreach (var listener in _listeners) listener.OnCharacterHide(index);
+            foreach (var listener in _listeners)
+            {
+                listener.OnCharacterHidden(index);
+            }
         }
 
         public void ResetAt(int index)
@@ -157,29 +191,51 @@ namespace TextEffects.Effects.Typewriter
         public void ShowAll(bool skipAnimation = false)
         {
             for (var i = 0; i < _characterCount; i++)
+            {
                 ShowAt(i, skipAnimation);
+            }
         }
 
         public void HideAll(bool skipAnimation = false)
         {
             for (var i = 0; i < _characterCount; i++)
+            {
                 HideAt(i, skipAnimation);
+            }
         }
 
         public void ResetAll()
         {
             for (var i = 0; i < _characterCount; i++)
+            {
                 ResetAt(i);
+            }
         }
 
         public void Pause()
         {
+            if (IsPaused)
+            {
+                return;
+            }
             IsPaused = true;
+            foreach (var listener in _listeners)
+            {
+                listener.OnPaused();
+            }
         }
 
         public void Resume()
         {
+            if (!IsPaused)
+            {
+                return;
+            }
             IsPaused = false;
+            foreach (var listener in _listeners)
+            {
+                listener.OnResumed();
+            }
         }
 
         public void Stop()
@@ -199,14 +255,16 @@ namespace TextEffects.Effects.Typewriter
                 _playCts?.Cancel();
                 _playCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
 
-                foreach (var listener in _listeners) listener.OnPlay();
+                foreach (var listener in _listeners) listener.OnPlayStarted();
 
                 var characterIndex = 0;
                 var scriptTagIndex = 0;
                 while (!_playCts.Token.IsCancellationRequested)
                 {
                     if (characterIndex >= _characterCount)
+                    {
                         break;
+                    }
 
                     var scriptCharacterInfo = _scriptInfo.ScriptCharacterInfo[characterIndex];
                     if (scriptCharacterInfo.IsShown)
@@ -216,7 +274,9 @@ namespace TextEffects.Effects.Typewriter
                     }
 
                     if (scriptCharacterInfo.Delay > 0)
+                    {
                         await SafeTask.Delay(TimeSpan.FromSeconds(scriptCharacterInfo.Delay), _playCts.Token);
+                    }
 
                     // ScriptTagの実行
                     List<IScriptTag> executingTags = null;
@@ -233,10 +293,15 @@ namespace TextEffects.Effects.Typewriter
                     }
 
                     while (IsPaused)
+                    {
                         await SafeTask.WaitWhile(() => IsPaused, _playCts.Token);
+                    }
 
                     _playCts.Token.ThrowIfCancellationRequested();
-                    if (characterIndex >= _characterCount) break;
+                    if (characterIndex >= _characterCount)
+                    {
+                        break;
+                    }
 
                     ShowAt(characterIndex);
 
@@ -247,6 +312,10 @@ namespace TextEffects.Effects.Typewriter
             }
             catch (OperationCanceledException)
             {
+                foreach (var listener in _listeners)
+                {
+                    listener.OnPlayCanceled();
+                }
                 cancellationToken.ThrowIfCancellationRequested();
             }
         }

@@ -5,13 +5,11 @@ using TextEffects.Common;
 using TextEffects.Core;
 using TextEffects.Data;
 using TextEffects.Effects.Typewriter.Modifiers;
-using TMPro;
 using UnityEngine;
 using TextEffects.Effects.Typewriter.ScriptTags;
 
 #if TEXTEFFECTS_UNITASK_SUPPORT
 using Cysharp.Threading.Tasks;
-
 #else
 using System.Threading.Tasks;
 #endif
@@ -27,7 +25,7 @@ namespace TextEffects.Effects.Typewriter
         [SerializeField] private bool _keepDisplayOnRefresh;
         [SerializeField] private float _defaultDelay = 0.01f;
         private AutoPlayEffect _autoPlayEffect;
-        private DefaultScriptModifier _defaultScriptModifier;
+        private DefaultDelayScriptModifier _defaultDelayScriptModifier;
 #if TEXTEFFECTS_UNITASK_SUPPORT
         private Dictionary<string, Func<TagInfo, CancellationToken, UniTask>> _eventTagHandler;
 #else
@@ -36,6 +34,27 @@ namespace TextEffects.Effects.Typewriter
         private TypewriterEffect _typewriterEffect;
         private ScriptTagFactoryMap _scriptTagFactoryMap;
         private DisplayTagFactoryMap _displayTagFactoryMap;
+
+        public bool IsPaused
+        {
+            get
+            {
+                InitializeIfNeeded();
+                return _typewriterEffect.IsPaused;
+            }
+            set
+            {
+                InitializeIfNeeded();
+                if (value)
+                {
+                    _typewriterEffect.Pause();
+                }
+                else
+                {
+                    _typewriterEffect.Resume();
+                }
+            }
+        }
 
         public bool AutoPlay
         {
@@ -49,9 +68,9 @@ namespace TextEffects.Effects.Typewriter
             set
             {
                 _defaultDelay = value;
-                if (_defaultScriptModifier != null)
+                if (_defaultDelayScriptModifier != null)
                 {
-                    _defaultScriptModifier.DefaultDelay = value;
+                    _defaultDelayScriptModifier.DefaultDelay = value;
                     SetDirty();
                 }
             }
@@ -86,6 +105,7 @@ namespace TextEffects.Effects.Typewriter
 
         protected override void RemoveFeature(TextEffector textEffector)
         {
+            InitializeIfNeeded();
             textEffector.RemoveEffect(_typewriterEffect);
             textEffector.RemoveEffect(_autoPlayEffect);
         }
@@ -225,11 +245,11 @@ namespace TextEffects.Effects.Typewriter
                 DisplayTagFactoryMap.Default,
                 _scriptTagFactoryMap,
                 _keepDisplayOnRefresh);
-            _defaultScriptModifier = new DefaultScriptModifier(_defaultDelay);
+            _defaultDelayScriptModifier = new DefaultDelayScriptModifier(_defaultDelay);
 
             _autoPlayEffect = new AutoPlayEffect(this);
 
-            _typewriterEffect.AddModifier(_defaultScriptModifier);
+            _typewriterEffect.AddModifier(_defaultDelayScriptModifier);
             _typewriterEffect.AddModifier(new DelayTagScriptModifier());
         }
 
@@ -267,10 +287,12 @@ namespace TextEffects.Effects.Typewriter
                 _owner = owner;
             }
 
-            public void Setup(TMP_TextInfo textInfo, IReadOnlyCollection<TagInfo> tags)
+            public void Setup(TextInfo textInfo, IReadOnlyCollection<TagInfo> tags)
             {
                 if (!_owner._autoPlay)
+                {
                     return;
+                }
 
                 _owner.PlayScript();
             }

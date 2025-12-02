@@ -48,11 +48,16 @@ namespace TextEffects.Core
                         ignoreTagLength += match.Length;
                     }
 
-                    if (isNoParse && isClosingTag) isNoParse = false;
+                    if (isNoParse && isClosingTag)
+                    {
+                        isNoParse = false;
+                    }
                 }
 
                 if (isNoParse)
+                {
                     continue;
+                }
 
                 var tagNextCharIndex = match.Index - ignoreTagLength;
                 ignoreTagLength += match.Length;
@@ -64,7 +69,9 @@ namespace TextEffects.Core
                 }
 
                 if (TMPTags.Contains(tagName))
+                {
                     continue;
+                }
 
                 tmpTextBuilder.Append(input.Substring(lastAddedIndex, match.Index - lastAddedIndex));
                 lastAddedIndex = match.Index + match.Length;
@@ -104,18 +111,28 @@ namespace TextEffects.Core
                 }
             }
 
-            foreach (var tagInfo in stack) tags.AddLast(tagInfo);
+            foreach (var tagInfo in stack)
+            {
+                tags.AddLast(tagInfo);
+            }
 
             tmpTextBuilder.Append(input.Substring(lastAddedIndex));
 
             var lastIndex = input.Length - ignoreTagLength;
             foreach (var tagInfo in tags)
+            {
                 if (tagInfo.IsEmptyTag)
+                {
                     tagInfo.EndIndex = lastIndex;
+                }
+            }
 
             var buffers = tags.ToArray();
             var tagInfos = new TagInfo[buffers.Length];
-            for (var i = 0; i < buffers.Length; i++) tagInfos[i] = new TagInfo(buffers[i]);
+            for (var i = 0; i < buffers.Length; i++)
+            {
+                tagInfos[i] = new TagInfo(buffers[i]);
+            }
 
             return (tmpTextBuilder.ToString(), tagInfos);
         }

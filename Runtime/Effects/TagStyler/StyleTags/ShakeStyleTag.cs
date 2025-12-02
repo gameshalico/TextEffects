@@ -33,8 +33,7 @@ namespace TextEffects.Effects.TagStyler.StyleTags
             if (_delay > 0 && Time.unscaledTime - _lastShakeTime > _delay) Shake();
         }
 
-        protected override void UpdateCharacterInTag(ref TMP_CharacterInfo characterInfo,
-            ref AnimationCharacterInfo animationInfo)
+        protected override void UpdateCharacterInTag(ref AnimationCharacterInfo animationInfo)
         {
             animationInfo.Quad += _shakeOffsets[animationInfo.CharacterIndex - TagInfo.StartIndex];
         }

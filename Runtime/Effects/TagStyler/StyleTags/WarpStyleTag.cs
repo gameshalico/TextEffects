@@ -33,8 +33,7 @@ namespace TextEffects.Effects.TagStyler.StyleTags
             if (_delay > 0 && Time.unscaledTime - _lastWarpTime > _delay) Warp();
         }
 
-        protected override void UpdateCharacterInTag(ref TMP_CharacterInfo characterInfo,
-            ref AnimationCharacterInfo animationInfo)
+        protected override void UpdateCharacterInTag(ref AnimationCharacterInfo animationInfo)
         {
             animationInfo.Quad += _offsets[animationInfo.CharacterIndex - TagInfo.StartIndex];
         }

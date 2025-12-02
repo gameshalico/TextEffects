@@ -13,7 +13,9 @@ namespace TextEffects.Core
             get
             {
                 if (!_textEffector)
+                {
                     _textEffector = GetComponent<TextEffector>();
+                }
                 return _textEffector;
             }
         }
@@ -36,7 +38,9 @@ namespace TextEffects.Core
         protected void SetDirty()
         {
             if (isActiveAndEnabled)
+            {
                 Effector.SetDirty();
+            }
         }
     }
 }

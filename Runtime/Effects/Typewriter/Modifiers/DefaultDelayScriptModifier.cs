@@ -3,9 +3,9 @@ using TextEffects.Data;
 
 namespace TextEffects.Effects.Typewriter.Modifiers
 {
-    public sealed class DefaultScriptModifier : IScriptModifier
+    public sealed class DefaultDelayScriptModifier : IScriptModifier
     {
-        public DefaultScriptModifier(float defaultDelay)
+        public DefaultDelayScriptModifier(float defaultDelay)
         {
             DefaultDelay = defaultDelay;
         }

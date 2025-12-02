@@ -17,8 +17,7 @@ namespace TextEffects.Effects.TagStyler.StyleTags
             _charStep = tagInfo.GetFloat("s", 0.5f);
         }
 
-        protected override void UpdateCharacterInTag(ref TMP_CharacterInfo characterInfo,
-            ref AnimationCharacterInfo animationInfo)
+        protected override void UpdateCharacterInTag(ref AnimationCharacterInfo animationInfo)
         {
             var offset = Mathf.Sin(Time.unscaledTime * _frequency + animationInfo.CharacterIndex * _charStep) *
                          _amplitude;

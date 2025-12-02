@@ -22,8 +22,7 @@ namespace TextEffects.Effects.TagStyler.StyleTags
             for (var i = 0; i < _directions.Length; i++) _directions[i] = Random.insideUnitCircle.normalized;
         }
 
-        protected override void UpdateCharacterInTag(ref TMP_CharacterInfo characterInfo,
-            ref AnimationCharacterInfo animationInfo)
+        protected override void UpdateCharacterInTag(ref AnimationCharacterInfo animationInfo)
         {
             var offset = Mathf.Sin(Time.unscaledTime * _frequency + animationInfo.CharacterIndex * _charStep) *
                          _amplitude;

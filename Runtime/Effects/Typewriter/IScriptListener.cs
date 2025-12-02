@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using TextEffects.Core;
 using TextEffects.Data;
 using TMPro;
 
@@ -6,31 +7,43 @@ namespace TextEffects.Effects.Typewriter
 {
     public interface IScriptListener
     {
-        public void OnSetup(TMP_TextInfo textInfo, IReadOnlyCollection<TagInfo> tags)
+        public void OnSetupCompleted(TextInfo textInfo, IReadOnlyCollection<TagInfo> tags)
         {
         }
 
-        public void OnRelease()
+        public void OnReleased()
         {
         }
 
-        public void OnScriptModify(ScriptTextInfo scriptInfo)
+        public void OnScriptModified(ScriptTextInfo scriptInfo)
         {
         }
 
-        public void OnPlay()
+        public void OnPlayStarted()
         {
         }
 
-        public void OnFinish()
+        public void OnPlayFinished()
         {
         }
 
-        public void OnCharacterShow(int characterIndex)
+        public void OnPlayCanceled()
         {
         }
 
-        public void OnCharacterHide(int characterIndex)
+        public void OnPaused()
+        {
+        }
+
+        public void OnResumed()
+        {
+        }
+
+        public void OnCharacterShown(int characterIndex)
+        {
+        }
+
+        public void OnCharacterHidden(int characterIndex)
         {
         }
     }

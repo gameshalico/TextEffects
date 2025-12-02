@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using TextEffects.Data;
-using TMPro;
 
 namespace TextEffects.Core
 {
@@ -34,12 +33,16 @@ namespace TextEffects.Core
             public void Release()
             {
                 if (_isReleased)
+                {
                     return;
+                }
 
                 _isReleased = true;
 
                 foreach (var effect in _effects)
+                {
                     effect.Release();
+                }
 
                 ReleasePrevTagInfos();
             }
@@ -47,20 +50,26 @@ namespace TextEffects.Core
             public void UpdateText(AnimationTextInfo info)
             {
                 if (_isReleased)
+                {
                     return;
+                }
 
                 foreach (var effect in _effects)
+                {
                     effect.UpdateText(info);
+                }
             }
 
-            public void Setup(TMP_TextInfo textInfo)
+            public void Setup(TextInfo textInfo)
             {
                 _isReleased = false;
                 _effects.AddRange(_effectsToAdd);
                 _effectsToAdd.Clear();
 
                 foreach (var effect in _effects)
+                {
                     effect.Setup(textInfo, _tagInfos);
+                }
             }
 
             private void ReleasePrevTagInfos()
@@ -68,7 +77,9 @@ namespace TextEffects.Core
                 if (_prevTagInfos != null)
                 {
                     foreach (var tag in _prevTagInfos)
+                    {
                         tag.Return();
+                    }
                     _prevTagInfos = null;
                 }
             }
@@ -81,16 +92,22 @@ namespace TextEffects.Core
             public void RemoveEffect(ITextAnimationEffect effect)
             {
                 if (!_effects.Contains(effect))
+                {
                     return;
+                }
                 if (!_isReleased)
+                {
                     effect.Release();
+                }
                 _effects.Remove(effect);
             }
 
             public void SetTags(TagInfo[] tags)
             {
                 if (_prevTagInfos != null && !_isReleased)
+                {
                     Release();
+                }
 
                 _prevTagInfos = _tagInfos;
                 _tagInfos = tags;

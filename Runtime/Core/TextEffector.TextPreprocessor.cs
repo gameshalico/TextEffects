@@ -39,12 +39,16 @@ namespace TextEffects.Core
             {
                 var formattedText = text;
                 foreach (var formatter in _formatters.OrderBy(f => f.FormatOrder))
+                {
                     formattedText = formatter.FormatText(formattedText);
+                }
 
                 var parseResults = TagParser.Parse(formattedText);
 
                 if (_prevStringHash != formattedText.GetHashCode())
+                {
                     _textEffector._animationHandler.SetTags(parseResults.tags);
+                }
                 _prevStringHash = formattedText.GetHashCode();
 
                 return parseResults.tmpText;

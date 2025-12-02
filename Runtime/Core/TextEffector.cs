@@ -55,7 +55,9 @@ namespace TextEffects.Core
         private void InitializeIfNeeded()
         {
             if (_animationApplier != null)
+            {
                 return;
+            }
 
             TMPText = GetComponent<TMP_Text>();
             _animationHandler = new TextAnimationHandler();

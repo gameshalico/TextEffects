@@ -52,8 +52,7 @@ namespace TextEffects.Effects.TagStyler.StyleTags
             return EaseOutBounce(Remap(t, 0.7f, 1, 0, 1)) * -_amplitude + _amplitude;
         }
 
-        protected override void UpdateCharacterInTag(ref TMP_CharacterInfo characterInfo,
-            ref AnimationCharacterInfo animationInfo)
+        protected override void UpdateCharacterInTag(ref AnimationCharacterInfo animationInfo)
         {
             var t = Mathf.Repeat(Time.unscaledTime * _frequency + animationInfo.CharacterIndex * -_charStep, 1f);
             var offset = CalcOffset(t);

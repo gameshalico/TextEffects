@@ -20,8 +20,7 @@ namespace TextEffects.Effects.TagStyler.StyleTags
             _value = tagInfo.GetFloat("val", 1);
         }
 
-        protected override void UpdateCharacterInTag(ref TMP_CharacterInfo characterInfo,
-            ref AnimationCharacterInfo animationInfo)
+        protected override void UpdateCharacterInTag(ref AnimationCharacterInfo animationInfo)
         {
             var offset = Mathf.Repeat(Time.unscaledTime * _frequency + animationInfo.CharacterIndex * -_charStep, 1);
             var color = (Color32)Color.HSVToRGB(Mathf.Repeat(offset, 1), _saturation, _value);
