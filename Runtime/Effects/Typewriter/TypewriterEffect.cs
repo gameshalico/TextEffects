@@ -22,6 +22,7 @@ namespace TextEffects.Effects.Typewriter
     {
         private readonly List<IScriptModifier> _modifiers;
         private readonly List<IScriptListener> _listeners;
+        private readonly List<IScriptTag> _executingScriptTags = new();
         private IDisplayTag[] _displayTags;
         private (TagInfo Tag, IScriptTag ScriptTag)[] _scriptTags;
         private int _characterCount;
@@ -219,6 +220,10 @@ namespace TextEffects.Effects.Typewriter
                 return;
             }
             IsPaused = true;
+            foreach (var tag in _executingScriptTags)
+            {
+                tag.Pause();
+            }
             foreach (var listener in _listeners)
             {
                 listener.OnPaused();
@@ -232,6 +237,10 @@ namespace TextEffects.Effects.Typewriter
                 return;
             }
             IsPaused = false;
+            foreach (var tag in _executingScriptTags)
+            {
+                tag.Resume();
+            }
             foreach (var listener in _listeners)
             {
                 listener.OnResumed();
@@ -279,17 +288,16 @@ namespace TextEffects.Effects.Typewriter
                     }
 
                     // ScriptTagの実行
-                    List<IScriptTag> executingTags = null;
+                    _executingScriptTags.Clear();
                     while (scriptTagIndex < _scriptTags.Length &&
                         _scriptTags[scriptTagIndex].Tag.StartIndex <= characterIndex)
                     {
-                        executingTags ??= new List<IScriptTag>();
-                        executingTags.Add(_scriptTags[scriptTagIndex].ScriptTag);
+                        _executingScriptTags.Add(_scriptTags[scriptTagIndex].ScriptTag);
                         scriptTagIndex++;
                     }
-                    if (executingTags != null)
+                    if (_executingScriptTags.Count > 0)
                     {
-                        await SafeTask.WhenAll(executingTags.Select(tag => tag.ExecuteAsync(_playCts.Token)));
+                        await SafeTask.WhenAll(_executingScriptTags.Select(tag => tag.ExecuteAsync(_playCts.Token)));
                     }
 
                     while (IsPaused)

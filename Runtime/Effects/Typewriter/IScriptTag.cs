@@ -19,6 +19,8 @@ namespace TextEffects.Effects.Typewriter
 #else
         Task ExecuteAsync(CancellationToken cancellationToken = default);
 #endif
+        void Pause();
+        void Resume();
         void Release();
     }
 }

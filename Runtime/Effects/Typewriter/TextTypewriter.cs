@@ -27,9 +27,9 @@ namespace TextEffects.Effects.Typewriter
         private AutoPlayEffect _autoPlayEffect;
         private DefaultDelayScriptModifier _defaultDelayScriptModifier;
 #if TEXTEFFECTS_UNITASK_SUPPORT
-        private Dictionary<string, Func<TagInfo, CancellationToken, UniTask>> _eventTagHandler;
+        private Dictionary<string, Func<EventContext, CancellationToken, UniTask>> _eventTagHandler;
 #else
-        private Dictionary<string, Func<TagInfo, CancellationToken, Task>> _eventTagHandler;
+        private Dictionary<string, Func<EventContext, CancellationToken, Task>> _eventTagHandler;
 #endif
         private TypewriterEffect _typewriterEffect;
         private ScriptTagFactoryMap _scriptTagFactoryMap;
@@ -141,9 +141,9 @@ namespace TextEffects.Effects.Typewriter
         }
 
 #if TEXTEFFECTS_UNITASK_SUPPORT
-        public void RegisterEventTagHandler(string tagName, Func<TagInfo, CancellationToken, UniTask> handler)
+        public void RegisterEventTagHandler(string tagName, Func<EventContext, CancellationToken, UniTask> handler)
 #else
-        public void RegisterEventTagHandler(string tagName, Func<TagInfo, CancellationToken, Task> handler)
+        public void RegisterEventTagHandler(string tagName, Func<EventContext, CancellationToken, Task> handler)
 #endif
         {
             InitializeIfNeeded();
@@ -218,14 +218,14 @@ namespace TextEffects.Effects.Typewriter
         }
 
 #if TEXTEFFECTS_UNITASK_SUPPORT
-        private async UniTask InvokeEventTagHandlerAsync(TagInfo tagInfo, CancellationToken cancellationToken)
+        private async UniTask InvokeEventTagHandlerAsync(EventContext eventContext, CancellationToken cancellationToken)
 #else
-        private async Task InvokeEventTagHandlerAsync(TagInfo tagInfo, CancellationToken cancellationToken)
+        private async Task InvokeEventTagHandlerAsync(EventContext eventContext, CancellationToken cancellationToken)
 #endif
         {
-            if (_eventTagHandler != null && _eventTagHandler.TryGetValue(tagInfo.GetString(""), out var handler))
+            if (_eventTagHandler != null && _eventTagHandler.TryGetValue(eventContext.TagInfo.GetString(""), out var handler))
             {
-                await handler(tagInfo, cancellationToken);
+                await handler(eventContext, cancellationToken);
             }
         }
 
