@@ -45,7 +45,7 @@ namespace TextEffects.Core
                     formattedText = formatter.FormatText(formattedText);
                 }
 
-                var parseResults = TagParser.Parse(formattedText, _textEffector._unescapeXml);
+                var parseResults = TagParser.Parse(formattedText);
 
                 if (_prevStringHash != formattedText.GetHashCode())
                 {

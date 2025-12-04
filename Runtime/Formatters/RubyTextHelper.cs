@@ -44,10 +44,9 @@ namespace TextEffects.Formatters
         /// <param name="rubyVerticalOffset">Vertical offset in em units</param>
         /// <param name="getPreferredValues">Function to get preferred text size in pixels</param>
         /// <param name="rubyPrefixTag">Tag to add before ruby text (optional)</param>
-        /// <param name="rubySuffixTag">Tag to add after ruby text (optional)</param>
-        /// <param name="unescapeXml">If true, unescapes XML entities before calculating width</param>
+        /// <param name="rubySuffixTag">Tag to add after ruby text (optional)</param>width</param>
         /// <returns>Formatted text with TMP markup</returns>
-        public static string FormatRubyText(string input, float rubyScale, float rubyVerticalOffset, GetPreferredValuesDelegate getPreferredValues, string rubyPrefixTag = "", string rubySuffixTag = "", bool unescapeXml = false)
+        public static string FormatRubyText(string input, float rubyScale, float rubyVerticalOffset, GetPreferredValuesDelegate getPreferredValues, string rubyPrefixTag = "", string rubySuffixTag = "")
         {
             return RubyRegex.Replace(input, match =>
             {
@@ -60,7 +59,7 @@ namespace TextEffects.Formatters
                 rubyText = UnescapeValue(rubyText);
 
                 var baseText = match.Groups["base"].Value;
-                return CreateRubyText(baseText, rubyText, rubyScale, rubyVerticalOffset, getPreferredValues, rubyPrefixTag, rubySuffixTag, unescapeXml);
+                return CreateRubyText(baseText, rubyText, rubyScale, rubyVerticalOffset, getPreferredValues, rubyPrefixTag, rubySuffixTag);
             });
         }
 
@@ -74,19 +73,14 @@ namespace TextEffects.Formatters
         /// <param name="getPreferredValues">Function to get preferred text size in pixels</param>
         /// <param name="rubyPrefixTag">Tag to add before ruby text (optional)</param>
         /// <param name="rubySuffixTag">Tag to add after ruby text (optional)</param>
-        /// <param name="unescapeXml">If true, unescapes XML entities before calculating width</param>
         /// <returns>Formatted ruby text markup</returns>
-        public static string CreateRubyText(string baseText, string rubyText, float rubyScale, float rubyVerticalOffset, GetPreferredValuesDelegate getPreferredValues, string rubyPrefixTag = "", string rubySuffixTag = "", bool unescapeXml = false)
+        public static string CreateRubyText(string baseText, string rubyText, float rubyScale, float rubyVerticalOffset, GetPreferredValuesDelegate getPreferredValues, string rubyPrefixTag = "", string rubySuffixTag = "")
         {
             var rubyScalePercent = rubyScale * 100f;
 
-            // XMLエスケープを解除して実際の表示幅を計算
-            var baseTextForWidth = unescapeXml ? XmlEscapeUtility.UnescapeXml(baseText) : baseText;
-            var rubyTextForWidth = unescapeXml ? XmlEscapeUtility.UnescapeXml(rubyText) : rubyText;
-
             // Get actual text widths in pixels from TextMeshPro
-            var baseSize = getPreferredValues(baseTextForWidth);
-            var rubySize = getPreferredValues(rubyTextForWidth);
+            var baseSize = getPreferredValues(baseText);
+            var rubySize = getPreferredValues(rubyText);
 
             float baseWidth = baseSize.x;
             float rubyWidth = rubySize.x * rubyScale;
@@ -97,7 +91,7 @@ namespace TextEffects.Formatters
 
             // When ruby is shorter than base, use cspace to distribute ruby characters evenly
             // 文字数の計算は変換後のテキストを使用
-            int rubyCharCount = rubyTextForWidth.Length;
+            int rubyCharCount = rubyText.Length;
             if (rubyWidth < baseWidth && rubyCharCount > 1)
             {
                 // Calculate character spacing to make ruby fill the base width
