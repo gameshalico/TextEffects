@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace TextEffects.Effects.TagStyler.StyleTags
 {
-    public sealed class ShakeStyleTag : ContainerStyleTag<ShakeStyleTag>
+    public sealed class ShakeStyleTag : PooledStyleTag<ShakeStyleTag>
     {
         private float _delay;
         private float _amplitude;
@@ -28,14 +28,14 @@ namespace TextEffects.Effects.TagStyler.StyleTags
             _lastShakeTime = Time.unscaledTime;
         }
 
-        protected override void OnUpdateText(AnimationTextInfo animationInfo)
+        public override void UpdateText(AnimationTextInfo animationInfo)
         {
             if (_delay > 0 && Time.unscaledTime - _lastShakeTime > _delay) Shake();
-        }
 
-        protected override void UpdateCharacterInTag(ref AnimationCharacterInfo animationInfo)
-        {
-            animationInfo.Quad += _shakeOffsets[animationInfo.CharacterIndex - TagInfo.StartIndex];
+            foreach (var item in StyleTagRangeIterator.GetRange(TagInfo, animationInfo))
+            {
+                item.AnimationInfo.Quad += _shakeOffsets[item.AnimationInfo.CharacterIndex - TagInfo.StartIndex];
+            }
         }
     }
 }

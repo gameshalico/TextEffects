@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace TextEffects.Effects.TagStyler.StyleTags
 {
-    public sealed class BounceStyleTag : ContainerStyleTag<BounceStyleTag>
+    public sealed class BounceStyleTag : PooledStyleTag<BounceStyleTag>
     {
         private float _amplitude;
         private float _frequency;
@@ -52,11 +52,14 @@ namespace TextEffects.Effects.TagStyler.StyleTags
             return EaseOutBounce(Remap(t, 0.7f, 1, 0, 1)) * -_amplitude + _amplitude;
         }
 
-        protected override void UpdateCharacterInTag(ref AnimationCharacterInfo animationInfo)
+        public override void UpdateText(AnimationTextInfo animationInfo)
         {
-            var t = Mathf.Repeat(Time.unscaledTime * _frequency + animationInfo.CharacterIndex * -_charStep, 1f);
-            var offset = CalcOffset(t);
-            animationInfo.Quad += new Vector3(0, offset, 0);
+            foreach (var item in StyleTagRangeIterator.GetRange(TagInfo, animationInfo))
+            {
+                var t = Mathf.Repeat(Time.unscaledTime * _frequency + item.AnimationInfo.CharacterIndex * -_charStep, 1f);
+                var offset = CalcOffset(t);
+                item.AnimationInfo.Quad += new Vector3(0, offset, 0);
+            }
         }
     }
 }

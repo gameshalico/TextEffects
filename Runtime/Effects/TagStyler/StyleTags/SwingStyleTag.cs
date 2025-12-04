@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace TextEffects.Effects.TagStyler.StyleTags
 {
-    public sealed class SwingStyleTag : ContainerStyleTag<SwingStyleTag>
+    public sealed class SwingStyleTag : PooledStyleTag<SwingStyleTag>
     {
         private float _amplitude;
         private float _frequency;
@@ -17,11 +17,14 @@ namespace TextEffects.Effects.TagStyler.StyleTags
             _charStep = tagInfo.GetFloat("s", 0.5f);
         }
 
-        protected override void UpdateCharacterInTag(ref AnimationCharacterInfo animationInfo)
+        public override void UpdateText(AnimationTextInfo animationInfo)
         {
-            var offset = Mathf.Sin(Time.unscaledTime * _frequency + animationInfo.CharacterIndex * _charStep) *
-                         _amplitude;
-            animationInfo.ApplyMatrixOnCenter(Matrix4x4.Rotate(Quaternion.Euler(0, 0, offset)));
+            foreach (var item in StyleTagRangeIterator.GetRange(TagInfo, animationInfo))
+            {
+                var offset = Mathf.Sin(Time.unscaledTime * _frequency + item.AnimationInfo.CharacterIndex * _charStep) *
+                             _amplitude;
+                item.AnimationInfo.ApplyMatrixOnCenter(Matrix4x4.Rotate(Quaternion.Euler(0, 0, offset)));
+            }
         }
     }
 }

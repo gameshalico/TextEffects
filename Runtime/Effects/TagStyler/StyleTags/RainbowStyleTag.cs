@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace TextEffects.Effects.TagStyler.StyleTags
 {
-    public sealed class RainbowStyleTag : ContainerStyleTag<RainbowStyleTag>
+    public sealed class RainbowStyleTag : PooledStyleTag<RainbowStyleTag>
     {
         private float _frequency;
         private float _charStep;
@@ -20,12 +20,15 @@ namespace TextEffects.Effects.TagStyler.StyleTags
             _value = tagInfo.GetFloat("val", 1);
         }
 
-        protected override void UpdateCharacterInTag(ref AnimationCharacterInfo animationInfo)
+        public override void UpdateText(AnimationTextInfo animationInfo)
         {
-            var offset = Mathf.Repeat(Time.unscaledTime * _frequency + animationInfo.CharacterIndex * -_charStep, 1);
-            var color = (Color32)Color.HSVToRGB(Mathf.Repeat(offset, 1), _saturation, _value);
-            color.a = animationInfo.Color.BottomLeft.a;
-            animationInfo.Color = color;
+            foreach (var item in StyleTagRangeIterator.GetRange(TagInfo, animationInfo))
+            {
+                var offset = Mathf.Repeat(Time.unscaledTime * _frequency + item.AnimationInfo.CharacterIndex * -_charStep, 1);
+                var color = (Color32)Color.HSVToRGB(Mathf.Repeat(offset, 1), _saturation, _value);
+                color.a = item.AnimationInfo.Color.BottomLeft.a;
+                item.AnimationInfo.Color = color;
+            }
         }
     }
 }

@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace TextEffects.Effects.Typewriter.DisplayTags
 {
-    public sealed class RotateShowTag : ContainerDisplayTag<RotateShowTag>
+    public sealed class RotateShowTag : PooledDisplayTag<RotateShowTag>
     {
         private float _duration;
         private float _angle;
@@ -14,17 +14,18 @@ namespace TextEffects.Effects.Typewriter.DisplayTags
             _angle = tagInfo.GetFloat("a", -90f);
         }
 
-        protected override void UpdateCharacterInTag(
-            ref AnimationCharacterInfo animationInfo,
-            ref ScriptCharacterInfo scriptInfo)
+        public override void UpdateText(AnimationTextInfo animationInfo, ScriptTextInfo scriptInfo)
         {
-            animationInfo.ApplyMatrixOnCenter(
-                Matrix4x4.Rotate(Quaternion.Euler(0, 0, Mathf.Lerp(_angle, 0, scriptInfo.ShowProgress(_duration))))
-            );
+            foreach (var item in DisplayTagRangeIterator.GetRange(TagInfo, animationInfo, scriptInfo))
+            {
+                item.AnimationInfo.ApplyMatrixOnCenter(
+                    Matrix4x4.Rotate(Quaternion.Euler(0, 0, Mathf.Lerp(_angle, 0, item.ScriptInfo.ShowProgress(_duration))))
+                );
+            }
         }
     }
 
-    public class RotateHideTag : ContainerDisplayTag<RotateHideTag>
+    public class RotateHideTag : PooledDisplayTag<RotateHideTag>
     {
         private float _duration;
         private float _angle;
@@ -35,13 +36,14 @@ namespace TextEffects.Effects.Typewriter.DisplayTags
             _angle = tagInfo.GetFloat("a", 90f);
         }
 
-        protected override void UpdateCharacterInTag(
-            ref AnimationCharacterInfo animationInfo,
-            ref ScriptCharacterInfo scriptInfo)
+        public override void UpdateText(AnimationTextInfo animationInfo, ScriptTextInfo scriptInfo)
         {
-            animationInfo.ApplyMatrixOnCenter(
-                Matrix4x4.Rotate(Quaternion.Euler(0, 0, Mathf.Lerp(0, _angle, scriptInfo.HideProgress(_duration))))
-            );
+            foreach (var item in DisplayTagRangeIterator.GetRange(TagInfo, animationInfo, scriptInfo))
+            {
+                item.AnimationInfo.ApplyMatrixOnCenter(
+                    Matrix4x4.Rotate(Quaternion.Euler(0, 0, Mathf.Lerp(0, _angle, item.ScriptInfo.HideProgress(_duration))))
+                );
+            }
         }
     }
 }

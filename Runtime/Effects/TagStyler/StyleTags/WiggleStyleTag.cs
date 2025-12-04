@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace TextEffects.Effects.TagStyler.StyleTags
 {
-    public sealed class WiggleStyleTag : ContainerStyleTag<WiggleStyleTag>
+    public sealed class WiggleStyleTag : PooledStyleTag<WiggleStyleTag>
     {
         private float _amplitude;
         private float _frequency;
@@ -22,11 +22,14 @@ namespace TextEffects.Effects.TagStyler.StyleTags
             for (var i = 0; i < _directions.Length; i++) _directions[i] = Random.insideUnitCircle.normalized;
         }
 
-        protected override void UpdateCharacterInTag(ref AnimationCharacterInfo animationInfo)
+        public override void UpdateText(AnimationTextInfo animationInfo)
         {
-            var offset = Mathf.Sin(Time.unscaledTime * _frequency + animationInfo.CharacterIndex * _charStep) *
-                         _amplitude;
-            animationInfo.Quad += _directions[animationInfo.CharacterIndex - TagInfo.StartIndex] * offset;
+            foreach (var item in StyleTagRangeIterator.GetRange(TagInfo, animationInfo))
+            {
+                var offset = Mathf.Sin(Time.unscaledTime * _frequency + item.AnimationInfo.CharacterIndex * _charStep) *
+                             _amplitude;
+                item.AnimationInfo.Quad += _directions[item.AnimationInfo.CharacterIndex - TagInfo.StartIndex] * offset;
+            }
         }
     }
 }

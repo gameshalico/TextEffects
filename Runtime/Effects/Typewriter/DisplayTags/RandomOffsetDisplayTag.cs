@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace TextEffects.Effects.Typewriter.DisplayTags
 {
-    public sealed class RandomOffsetShowTag : ContainerDisplayTag<RandomOffsetShowTag>
+    public sealed class RandomOffsetShowTag : PooledDisplayTag<RandomOffsetShowTag>
     {
         private float _duration;
         private Vector2[] _offsets;
@@ -16,18 +16,18 @@ namespace TextEffects.Effects.Typewriter.DisplayTags
             for (var i = 0; i < _offsets.Length; i++) _offsets[i] = Random.insideUnitCircle * radius;
         }
 
-
-        protected override void UpdateCharacterInTag(
-            ref AnimationCharacterInfo animationInfo,
-            ref ScriptCharacterInfo scriptInfo)
+        public override void UpdateText(AnimationTextInfo animationInfo, ScriptTextInfo scriptInfo)
         {
-            animationInfo.Quad += Vector3.Lerp(_offsets[animationInfo.CharacterIndex - TagInfo.StartIndex],
-                Vector3.zero,
-                scriptInfo.ShowProgress(_duration));
+            foreach (var item in DisplayTagRangeIterator.GetRange(TagInfo, animationInfo, scriptInfo))
+            {
+                item.AnimationInfo.Quad += Vector3.Lerp(_offsets[item.AnimationInfo.CharacterIndex - TagInfo.StartIndex],
+                    Vector3.zero,
+                    item.ScriptInfo.ShowProgress(_duration));
+            }
         }
     }
 
-    public class RandomOffsetHideTag : ContainerDisplayTag<RandomOffsetHideTag>
+    public class RandomOffsetHideTag : PooledDisplayTag<RandomOffsetHideTag>
     {
         private float _duration;
         private Vector2[] _offsets;
@@ -40,14 +40,14 @@ namespace TextEffects.Effects.Typewriter.DisplayTags
             for (var i = 0; i < _offsets.Length; i++) _offsets[i] = Random.insideUnitCircle * radius;
         }
 
-
-        protected override void UpdateCharacterInTag(
-            ref AnimationCharacterInfo animationInfo,
-            ref ScriptCharacterInfo scriptInfo)
+        public override void UpdateText(AnimationTextInfo animationInfo, ScriptTextInfo scriptInfo)
         {
-            animationInfo.Quad += Vector3.Lerp(Vector3.zero,
-                _offsets[animationInfo.CharacterIndex - TagInfo.StartIndex],
-                scriptInfo.HideProgress(_duration));
+            foreach (var item in DisplayTagRangeIterator.GetRange(TagInfo, animationInfo, scriptInfo))
+            {
+                item.AnimationInfo.Quad += Vector3.Lerp(Vector3.zero,
+                    _offsets[item.AnimationInfo.CharacterIndex - TagInfo.StartIndex],
+                    item.ScriptInfo.HideProgress(_duration));
+            }
         }
     }
 }

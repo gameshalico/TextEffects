@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace TextEffects.Effects.TagStyler.StyleTags
 {
-    public sealed class PulseStyleTag : ContainerStyleTag<PulseStyleTag>
+    public sealed class PulseStyleTag : PooledStyleTag<PulseStyleTag>
     {
         private float _amplitude;
         private float _frequency;
@@ -17,12 +17,15 @@ namespace TextEffects.Effects.TagStyler.StyleTags
             _charStep = tagInfo.GetFloat("s", 0.5f);
         }
 
-        protected override void UpdateCharacterInTag(ref AnimationCharacterInfo animationInfo)
+        public override void UpdateText(AnimationTextInfo animationInfo)
         {
-            var offset = Mathf.Sin(Time.unscaledTime * _frequency + animationInfo.CharacterIndex * -_charStep) *
-                         _amplitude +
-                         _amplitude / 2;
-            animationInfo.ApplyMatrixOnCenter(Matrix4x4.Scale(new Vector3(1 + offset, 1 + offset, 1)));
+            foreach (var item in StyleTagRangeIterator.GetRange(TagInfo, animationInfo))
+            {
+                var offset = Mathf.Sin(Time.unscaledTime * _frequency + item.AnimationInfo.CharacterIndex * -_charStep) *
+                             _amplitude +
+                             _amplitude / 2;
+                item.AnimationInfo.ApplyMatrixOnCenter(Matrix4x4.Scale(new Vector3(1 + offset, 1 + offset, 1)));
+            }
         }
     }
 }

@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace TextEffects.Effects.Typewriter.DisplayTags
 {
-    public sealed class ScaleShowTag : ContainerDisplayTag<ScaleShowTag>
+    public sealed class ScaleShowTag : PooledDisplayTag<ScaleShowTag>
     {
         private float _duration;
         private float _initialSize;
@@ -14,16 +14,17 @@ namespace TextEffects.Effects.Typewriter.DisplayTags
             _initialSize = tagInfo.GetFloat("a");
         }
 
-        protected override void UpdateCharacterInTag(
-            ref AnimationCharacterInfo animationInfo,
-            ref ScriptCharacterInfo scriptInfo)
+        public override void UpdateText(AnimationTextInfo animationInfo, ScriptTextInfo scriptInfo)
         {
-            animationInfo.ApplyMatrixOnCenter(
-                Matrix4x4.Scale(Vector3.one * Mathf.Lerp(_initialSize, 1f, scriptInfo.ShowProgress(_duration))));
+            foreach (var item in DisplayTagRangeIterator.GetRange(TagInfo, animationInfo, scriptInfo))
+            {
+                item.AnimationInfo.ApplyMatrixOnCenter(
+                    Matrix4x4.Scale(Vector3.one * Mathf.Lerp(_initialSize, 1f, item.ScriptInfo.ShowProgress(_duration))));
+            }
         }
     }
 
-    public class ScaleHideTag : ContainerDisplayTag<ScaleHideTag>
+    public class ScaleHideTag : PooledDisplayTag<ScaleHideTag>
     {
         private float _duration;
         private float _targetSize;
@@ -34,12 +35,13 @@ namespace TextEffects.Effects.Typewriter.DisplayTags
             _targetSize = tagInfo.GetFloat("a");
         }
 
-        protected override void UpdateCharacterInTag(
-            ref AnimationCharacterInfo animationInfo,
-            ref ScriptCharacterInfo scriptInfo)
+        public override void UpdateText(AnimationTextInfo animationInfo, ScriptTextInfo scriptInfo)
         {
-            animationInfo.ApplyMatrixOnCenter(
-                Matrix4x4.Scale(Vector3.one * Mathf.Lerp(1, _targetSize, scriptInfo.HideProgress(_duration))));
+            foreach (var item in DisplayTagRangeIterator.GetRange(TagInfo, animationInfo, scriptInfo))
+            {
+                item.AnimationInfo.ApplyMatrixOnCenter(
+                    Matrix4x4.Scale(Vector3.one * Mathf.Lerp(1, _targetSize, item.ScriptInfo.HideProgress(_duration))));
+            }
         }
     }
 }

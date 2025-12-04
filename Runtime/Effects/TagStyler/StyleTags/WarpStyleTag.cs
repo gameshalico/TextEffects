@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace TextEffects.Effects.TagStyler.StyleTags
 {
-    public sealed class WarpStyleTag : ContainerStyleTag<WarpStyleTag>
+    public sealed class WarpStyleTag : PooledStyleTag<WarpStyleTag>
     {
         private float _delay;
         private float _amplitude;
@@ -28,14 +28,14 @@ namespace TextEffects.Effects.TagStyler.StyleTags
             _lastWarpTime = Time.unscaledTime;
         }
 
-        protected override void OnUpdateText(AnimationTextInfo animationInfo)
+        public override void UpdateText(AnimationTextInfo animationInfo)
         {
             if (_delay > 0 && Time.unscaledTime - _lastWarpTime > _delay) Warp();
-        }
 
-        protected override void UpdateCharacterInTag(ref AnimationCharacterInfo animationInfo)
-        {
-            animationInfo.Quad += _offsets[animationInfo.CharacterIndex - TagInfo.StartIndex];
+            foreach (var item in StyleTagRangeIterator.GetRange(TagInfo, animationInfo))
+            {
+                item.AnimationInfo.Quad += _offsets[item.AnimationInfo.CharacterIndex - TagInfo.StartIndex];
+            }
         }
     }
 }

@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace TextEffects.Effects.Typewriter.DisplayTags
 {
-    public sealed class OffsetShowTag : ContainerDisplayTag<OffsetShowTag>
+    public sealed class OffsetShowTag : PooledDisplayTag<OffsetShowTag>
     {
         private float _duration;
         private Vector3 _offset;
@@ -14,15 +14,16 @@ namespace TextEffects.Effects.Typewriter.DisplayTags
             _offset = new Vector3(tagInfo.GetFloat("x"), tagInfo.GetFloat("y"));
         }
 
-        protected override void UpdateCharacterInTag(
-            ref AnimationCharacterInfo animationInfo,
-            ref ScriptCharacterInfo scriptInfo)
+        public override void UpdateText(AnimationTextInfo animationInfo, ScriptTextInfo scriptInfo)
         {
-            animationInfo.Quad += Vector3.Lerp(_offset, Vector3.zero, scriptInfo.ShowProgress(_duration));
+            foreach (var item in DisplayTagRangeIterator.GetRange(TagInfo, animationInfo, scriptInfo))
+            {
+                item.AnimationInfo.Quad += Vector3.Lerp(_offset, Vector3.zero, item.ScriptInfo.ShowProgress(_duration));
+            }
         }
     }
 
-    public class OffsetHideTag : ContainerDisplayTag<OffsetHideTag>
+    public class OffsetHideTag : PooledDisplayTag<OffsetHideTag>
     {
         private float _duration;
         private Vector3 _offset;
@@ -33,11 +34,12 @@ namespace TextEffects.Effects.Typewriter.DisplayTags
             _offset = new Vector3(tagInfo.GetFloat("x"), tagInfo.GetFloat("y"));
         }
 
-        protected override void UpdateCharacterInTag(
-            ref AnimationCharacterInfo animationInfo,
-            ref ScriptCharacterInfo scriptInfo)
+        public override void UpdateText(AnimationTextInfo animationInfo, ScriptTextInfo scriptInfo)
         {
-            animationInfo.Quad += Vector3.Lerp(Vector3.zero, _offset, scriptInfo.HideProgress(_duration));
+            foreach (var item in DisplayTagRangeIterator.GetRange(TagInfo, animationInfo, scriptInfo))
+            {
+                item.AnimationInfo.Quad += Vector3.Lerp(Vector3.zero, _offset, item.ScriptInfo.HideProgress(_duration));
+            }
         }
     }
 }
