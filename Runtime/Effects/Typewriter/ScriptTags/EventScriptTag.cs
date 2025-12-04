@@ -36,13 +36,11 @@ namespace TextEffects.Effects.Typewriter.ScriptTags
     public sealed class EventScriptTag : PooledItem<EventScriptTag>, IScriptTag
     {
         private Func<EventContext, CancellationToken, AwaitableType> _eventFunc;
-
-        private TagInfo _tagInfo;
         private EventContext _context;
+
         public void Initialize(Func<EventContext, CancellationToken, AwaitableType> eventFunc, TagInfo tagInfo)
         {
             _eventFunc = eventFunc;
-            _tagInfo = tagInfo;
             _context = new EventContext(tagInfo);
         }
 
@@ -71,9 +69,9 @@ namespace TextEffects.Effects.Typewriter.ScriptTags
 
         public class Factory : IScriptTagFactory
         {
-            private readonly Func<EventContext, CancellationToken, UniTask> _eventFunc;
+            private readonly Func<EventContext, CancellationToken, AwaitableType> _eventFunc;
 
-            public Factory(Func<EventContext, CancellationToken, UniTask> eventFunc)
+            public Factory(Func<EventContext, CancellationToken, AwaitableType> eventFunc)
             {
                 _eventFunc = eventFunc;
             }
