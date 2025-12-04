@@ -12,12 +12,26 @@ namespace TextEffects.Core
     [RequireComponent(typeof(TMP_Text))]
     public sealed partial class TextEffector : MonoBehaviour
     {
+        [SerializeField] private bool _unescapeXml = true;
 
         private TextAnimationApplier _animationApplier;
         private TextAnimationHandler _animationHandler;
         private TextPreprocessor _textPreprocessor;
 
         public TMP_Text TMPText { get; private set; }
+
+        public bool UnescapeXml
+        {
+            get => _unescapeXml;
+            set
+            {
+                if (_unescapeXml != value)
+                {
+                    _unescapeXml = value;
+                    SetDirty();
+                }
+            }
+        }
 
         private void Update()
         {

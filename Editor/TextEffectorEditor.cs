@@ -14,6 +14,9 @@ namespace TextEffects.Editor
 
             var textEffector = (TextEffector)target;
 
+            // UnescapeXml setting
+            EditorGUILayout.PropertyField(serializedObject.FindProperty("_unescapeXml"), new GUIContent("Unescape XML"));
+
             serializedObject.ApplyModifiedProperties();
 
             EditorGUILayout.Space();
