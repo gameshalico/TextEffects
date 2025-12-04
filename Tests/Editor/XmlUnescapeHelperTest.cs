@@ -1,5 +1,5 @@
 using NUnit.Framework;
-using TextEffects.Formatters;
+using TextEffects.Core;
 
 namespace TextEffects.Editor.Tests
 {
@@ -84,7 +84,9 @@ namespace TextEffects.Editor.Tests
             var text = "Test <tag attr=\"value\"> & 'quote' \u00A0";
             var escaped = XmlEscapeUtility.EscapeXml(text);
             var unescaped = XmlEscapeUtility.UnescapeXml(escaped);
-            Assert.AreEqual(text, unescaped);
+            // UnescapeXmlはゼロ幅スペースを追加するため、完全なラウンドトリップにはならない
+            var expected = "Test <\u200Btag attr=\"value\">\u200B & 'quote' \u00A0";
+            Assert.AreEqual(expected, unescaped);
         }
 
         #endregion
@@ -95,7 +97,7 @@ namespace TextEffects.Editor.Tests
         public void UnescapeLessThan()
         {
             var text = "&lt;test&gt;";
-            var expected = "<test>";
+            var expected = "<\u200Btest>\u200B";
             var result = XmlEscapeUtility.UnescapeXml(text);
             Assert.AreEqual(expected, result);
         }
@@ -131,7 +133,7 @@ namespace TextEffects.Editor.Tests
         public void UnescapeMultiple()
         {
             var text = "&lt;tag attr=&quot;value&quot;&gt;Content&lt;/tag&gt;";
-            var expected = "<tag attr=\"value\">Content</tag>";
+            var expected = "<\u200Btag attr=\"value\">\u200BContent<\u200B/tag>\u200B";
             var result = XmlEscapeUtility.UnescapeXml(text);
             Assert.AreEqual(expected, result);
         }
@@ -140,7 +142,7 @@ namespace TextEffects.Editor.Tests
         public void UnescapeAllEntities()
         {
             var text = "&lt;&gt;&amp;&quot;&#39;&nbsp;";
-            var expected = "<>&\"'\u00A0";
+            var expected = "<\u200B>\u200B&\"'\u00A0";
             var result = XmlEscapeUtility.UnescapeXml(text);
             Assert.AreEqual(expected, result);
         }
@@ -149,7 +151,7 @@ namespace TextEffects.Editor.Tests
         public void UnescapeWithNormalText()
         {
             var text = "Normal text with &lt;escaped&gt; content";
-            var expected = "Normal text with <escaped> content";
+            var expected = "Normal text with <\u200Bescaped>\u200B content";
             var result = XmlEscapeUtility.UnescapeXml(text);
             Assert.AreEqual(expected, result);
         }

@@ -1,5 +1,6 @@
 using System.Text;
 using System.Text.RegularExpressions;
+using TextEffects.Core;
 using UnityEngine;
 
 namespace TextEffects.Formatters
@@ -80,9 +81,13 @@ namespace TextEffects.Formatters
         {
             var rubyScalePercent = rubyScale * 100f;
 
-            // XMLエスケープを解除して実際の表示幅を計算
-            var baseTextForWidth = unescapeXml ? XmlEscapeUtility.UnescapeXml(baseText) : baseText;
-            var rubyTextForWidth = unescapeXml ? XmlEscapeUtility.UnescapeXml(rubyText) : rubyText;
+            // XMLエスケープを解除
+            var baseTextUnescaped = unescapeXml ? XmlEscapeUtility.UnescapeXml(baseText) : baseText;
+            var rubyTextUnescaped = unescapeXml ? XmlEscapeUtility.UnescapeXml(rubyText) : rubyText;
+
+            // カスタムタグを除去して幅計算用のテキストを作成(TMPタグは残す)
+            var baseTextForWidth = TagParser.RemoveCustomTags(baseTextUnescaped);
+            var rubyTextForWidth = TagParser.RemoveCustomTags(rubyTextUnescaped);
 
             // Get actual text widths in pixels from TextMeshPro
             var baseSize = getPreferredValues(baseTextForWidth);
@@ -96,8 +101,8 @@ namespace TextEffects.Formatters
             string formattedRubyText;
 
             // When ruby is shorter than base, use cspace to distribute ruby characters evenly
-            // 文字数の計算は変換後のテキストを使用
-            int rubyCharCount = rubyTextForWidth.Length;
+            // 文字数の計算はプレーンテキストを使用(すべてのタグとゼロ幅スペースを除外)
+            int rubyCharCount = TagParser.GetPlainText(rubyTextForWidth).Length;
             if (rubyWidth < baseWidth && rubyCharCount > 1)
             {
                 // Calculate character spacing to make ruby fill the base width

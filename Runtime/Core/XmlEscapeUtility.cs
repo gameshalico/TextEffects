@@ -1,6 +1,6 @@
 using System.Text;
 
-namespace TextEffects.Formatters
+namespace TextEffects.Core
 {
     public static class XmlEscapeUtility
     {
@@ -57,13 +57,13 @@ namespace TextEffects.Formatters
                     // &lt; -> <
                     if (i + 3 < text.Length && text.Substring(i, 4) == "&lt;")
                     {
-                        sb.Append('<');
+                        sb.Append("<\u200B");
                         i += 4;
                     }
                     // &gt; -> >
                     else if (i + 3 < text.Length && text.Substring(i, 4) == "&gt;")
                     {
-                        sb.Append('>');
+                        sb.Append(">\u200B");
                         i += 4;
                     }
                     // &amp; -> &

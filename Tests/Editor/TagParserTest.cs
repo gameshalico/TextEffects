@@ -138,7 +138,7 @@ namespace TextEffects.Editor.Tests.Tests.Editor
         public void XmlUnescapeTest()
         {
             var text = "012&lt;test&gt;345&amp;678";
-            var expectedText = "012<test>345&678";
+            var expectedText = "012<\u200Btest>\u200B345&678";
 
             var result = TagParser.Parse(text, unescapeXml: true);
 
@@ -149,11 +149,11 @@ namespace TextEffects.Editor.Tests.Tests.Editor
         public void XmlUnescapeWithTagsTest()
         {
             var text = "&lt;bold&gt;<test>Hello&amp;World</test>&lt;/bold&gt;";
-            var expectedText = "<bold>Hello&World</bold>";
+            var expectedText = "<\u200Bbold>\u200BHello&World<\u200B/bold>\u200B";
 
             var expectedTags = new[]
             {
-                TagInfo.Create("test", new Dictionary<string, string>(), 6, 17, false)
+                TagInfo.Create("test", new Dictionary<string, string>(), 8, 19, false)
             };
 
             var result = TagParser.Parse(text, unescapeXml: true);
@@ -180,7 +180,7 @@ namespace TextEffects.Editor.Tests.Tests.Editor
         public void XmlUnescapeAllEntitiesTest()
         {
             var text = "&lt;&gt;&amp;&quot;&#39;&nbsp;";
-            var expectedText = "<>&\"'\u00A0";
+            var expectedText = "<\u200B>\u200B&\"'\u00A0";
 
             var result = TagParser.Parse(text, unescapeXml: true);
 
@@ -193,6 +193,117 @@ namespace TextEffects.Editor.Tests.Tests.Editor
 
             Assert.AreEqual(expectedText, result.Text);
             Assert.AreEqual(expectedTags, result.Tags);
+        }
+
+        [Test]
+        public void GetPlainText_RemovesAllTags()
+        {
+            var text = "Hello<color=red>World</color>";
+            var expected = "HelloWorld";
+
+            var result = TagParser.GetPlainText(text);
+
+            Assert.AreEqual(expected, result);
+        }
+
+        [Test]
+        public void GetPlainText_RemovesZeroWidthSpace()
+        {
+            var text = "Hello\u200BWorld";
+            var expected = "HelloWorld";
+
+            var result = TagParser.GetPlainText(text);
+
+            Assert.AreEqual(expected, result);
+        }
+
+        [Test]
+        public void GetPlainText_RemovesTMPAndCustomTags()
+        {
+            var text = "<custom>Hello<color=red>World</color></custom>";
+            var expected = "HelloWorld";
+
+            var result = TagParser.GetPlainText(text);
+
+            Assert.AreEqual(expected, result);
+        }
+
+        [Test]
+        public void GetPlainText_HandlesQuotedAttributes()
+        {
+            var text = "<tag attr=\"value>with>brackets\">Content</tag>";
+            var expected = "Content";
+
+            var result = TagParser.GetPlainText(text);
+
+            Assert.AreEqual(expected, result);
+        }
+
+        [Test]
+        public void GetPlainText_RemovesZeroWidthSpaceWithTags()
+        {
+            var text = "<\u200BHello>\u200B<color=red>World\u200B</color>";
+            var expected = "<Hello>World";
+
+            var result = TagParser.GetPlainText(text);
+
+            Assert.AreEqual(expected, result);
+        }
+
+        [Test]
+        public void RemoveCustomTags_KeepsTMPTags()
+        {
+            var text = "Hello<color=red>World</color>";
+            var expected = "Hello<color=red>World</color>";
+
+            var result = TagParser.RemoveCustomTags(text);
+
+            Assert.AreEqual(expected, result);
+        }
+
+        [Test]
+        public void RemoveCustomTags_RemovesCustomTags()
+        {
+            var text = "<custom>Hello</custom><color=red>World</color>";
+            var expected = "Hello<color=red>World</color>";
+
+            var result = TagParser.RemoveCustomTags(text);
+
+            Assert.AreEqual(expected, result);
+        }
+
+        [Test]
+        public void RemoveCustomTags_HandlesNestedTags()
+        {
+            var text = "<custom><color=red>Hello</color></custom>World";
+            var expected = "<color=red>Hello</color>World";
+
+            var result = TagParser.RemoveCustomTags(text);
+
+            Assert.AreEqual(expected, result);
+        }
+
+        [Test]
+        public void RemoveCustomTags_HandlesQuotedAttributes()
+        {
+            var text = "<custom attr=\"value>with>brackets\">Content</custom><size=20>Text</size>";
+            var expected = "Content<size=20>Text</size>";
+
+            var result = TagParser.RemoveCustomTags(text);
+
+            Assert.AreEqual(expected, result);
+        }
+
+        [Test]
+        public void RemoveCustomTags_PreservesAllTMPTags()
+        {
+            // <e>はカスタムタグなので除去される
+            var text = "<custom>Test</custom><b>Bold</b><i>Italic</i><size=20>Size</size><color=#FF0000>Color</color>";
+            var expected = "Test<b>Bold</b><i>Italic</i><size=20>Size</size><color=#FF0000>Color</color>";
+
+            var result = TagParser.RemoveCustomTags(text);
+
+            Assert.AreEqual(expected, result);
         }
     }
 }
