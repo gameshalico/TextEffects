@@ -1,70 +1,63 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Threading;
-using System.Collections.Generic;
-
 
 #if TEXTEFFECTS_UNITASK_SUPPORT
-#if UNITY_EDITOR
-using UnityEngine;
-using System.Threading.Tasks;
-#endif
-using Cysharp.Threading.Tasks;
+    using Cysharp.Threading.Tasks;
+    using AwaitableType = Cysharp.Threading.Tasks.UniTask;
 #else
-using System.Threading.Tasks;
+    using System.Threading.Tasks;
+    using System.Linq;
+    using AwaitableType = System.Threading.Tasks.ValueTask;
 #endif
 
+#if UNITY_EDITOR
+    using UnityEngine;
+#endif
 
 namespace TextEffects.Common
 {
     public static class SafeTask
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static async AwaitableType Delay(TimeSpan timeSpan, CancellationToken cancellationToken)
+        {
 #if TEXTEFFECTS_UNITASK_SUPPORT
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static async UniTask Delay(TimeSpan timeSpan, CancellationToken cancellationToken)
-        {
-#if UNITY_EDITOR
-            if (!Application.isPlaying)
-            {
-                await Task.Delay(timeSpan, cancellationToken);
-                return;
-            }
-#endif
-            await UniTask.Delay(timeSpan, true, cancellationToken: cancellationToken);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static async UniTask WaitWhile(Func<bool> predicate, CancellationToken cancellationToken)
-        {
-            await UniTask.WaitWhile(predicate, cancellationToken: cancellationToken);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static async UniTask WhenAll(IEnumerable<UniTask> tasks)
-        {
-            await UniTask.WhenAll(tasks);
-        }
+    #if UNITY_EDITOR
+            var delayType = Application.isPlaying ? DelayType.DeltaTime : DelayType.Realtime;
+            await UniTask.Delay(timeSpan, delayType: delayType, cancellationToken: cancellationToken);
+    #else
+            // ビルド後は常にゲーム内時間（TimeScale影響あり）
+            await UniTask.Delay(timeSpan, cancellationToken: cancellationToken);
+    #endif
 #else
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static async Task Delay(TimeSpan timeSpan, CancellationToken cancellationToken)
-        {
             await Task.Delay(timeSpan, cancellationToken);
+#endif
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static async Task WaitWhile(Func<bool> predicate, CancellationToken cancellationToken)
+        public static async AwaitableType WaitWhile(Func<bool> predicate, CancellationToken cancellationToken)
         {
+#if TEXTEFFECTS_UNITASK_SUPPORT
+            await UniTask.WaitWhile(predicate, cancellationToken: cancellationToken);
+#else
             while (predicate())
             {
-                await Task.Yield();
+                cancellationToken.ThrowIfCancellationRequested();
+                await Task.Delay(16, cancellationToken);
             }
+#endif
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static async Task WhenAll(IEnumerable<Task> tasks)
+        public static async AwaitableType WhenAll(IEnumerable<AwaitableType> tasks)
         {
-            await Task.WhenAll(tasks);
-        }
+#if TEXTEFFECTS_UNITASK_SUPPORT
+            await UniTask.WhenAll(tasks);
+#else
+            await Task.WhenAll(tasks.Select(x => x.AsTask()));
 #endif
+        }
     }
 }

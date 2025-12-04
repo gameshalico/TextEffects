@@ -10,10 +10,11 @@ using UnityEngine;
 
 #endif
 #if TEXTEFFECTS_UNITASK_SUPPORT
-using Cysharp.Threading.Tasks;
-
+    using Cysharp.Threading.Tasks;
+    using AwaitableType = Cysharp.Threading.Tasks.UniTask;
 #else
-using System.Threading.Tasks;
+    using System.Threading.Tasks;
+    using AwaitableType = System.Threading.Tasks.ValueTask;
 #endif
 
 namespace TextEffects.Effects.Typewriter
@@ -252,11 +253,7 @@ namespace TextEffects.Effects.Typewriter
             _playCts?.Cancel();
         }
 
-#if TEXTEFFECTS_UNITASK_SUPPORT
-        public async UniTask PlayScriptAsync(CancellationToken cancellationToken = default)
-#else
-        public async Task PlayScriptAsync(CancellationToken cancellationToken = default)
-#endif
+        public async AwaitableType PlayScriptAsync(CancellationToken cancellationToken = default)
         {
             try
             {
@@ -331,11 +328,7 @@ namespace TextEffects.Effects.Typewriter
 #if UNITY_EDITOR
         private CancellationTokenSource _loopCts;
 
-#if TEXTEFFECTS_UNITASK_SUPPORT
-        private async UniTask PlayScriptLoop(CancellationToken cancellationToken)
-#else
-        private async Task PlayScriptLoop(CancellationToken cancellationToken)
-#endif
+        private async AwaitableType PlayScriptLoop(CancellationToken cancellationToken)
         {
             _loopCts?.Cancel();
             _loopCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);

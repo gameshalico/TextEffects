@@ -1,9 +1,12 @@
-﻿using System.Collections.Generic;
-using System.Threading;
+﻿using System.Threading;
 using Cysharp.Threading.Tasks;
 using TextEffects.Common;
 using TextEffects.Data;
-using TMPro;
+#if TEXTEFFECTS_UNITASK_SUPPORT
+    using AwaitableType = Cysharp.Threading.Tasks.UniTask;
+#else
+    using AwaitableType = System.Threading.Tasks.ValueTask;
+#endif
 
 namespace TextEffects.Effects.Typewriter.ScriptTags
 {
@@ -31,11 +34,7 @@ namespace TextEffects.Effects.Typewriter.ScriptTags
         {
         }
 
-#if TEXTEFFECTS_UNITASK_SUPPORT
-        public abstract UniTask ExecuteAsync(CancellationToken cancellationToken = default);
-#else
-        public abstract Task ExecuteAsync(CancellationToken cancellationToken = default);
-#endif
+        public abstract AwaitableType ExecuteAsync(CancellationToken cancellationToken = default);
         public abstract void Pause();
         public abstract void Resume();
 

@@ -5,8 +5,12 @@ using System.Threading;
 using Cysharp.Threading.Tasks;
 using TextEffects.Common;
 using TextEffects.Data;
-using TextEffects.Effects.Typewriter.DisplayTags;
-using Unity.VisualScripting.YamlDotNet.Core.Tokens;
+
+#if TEXTEFFECTS_UNITASK_SUPPORT
+    using AwaitableType = Cysharp.Threading.Tasks.UniTask;
+#else
+    using AwaitableType = System.Threading.Tasks.ValueTask;
+#endif
 
 namespace TextEffects.Effects.Typewriter.ScriptTags
 {
@@ -31,26 +35,18 @@ namespace TextEffects.Effects.Typewriter.ScriptTags
 
     public sealed class EventScriptTag : PooledItem<EventScriptTag>, IScriptTag
     {
-#if TEXTEFFECTS_UNITASK_SUPPORT
-        private Func<EventContext, CancellationToken, UniTask> _eventFunc;
-#else
-        private Func<EventContext, CancellationToken, Task> _eventFunc;
-#endif
+        private Func<EventContext, CancellationToken, AwaitableType> _eventFunc;
 
         private TagInfo _tagInfo;
         private EventContext _context;
-        public void Initialize(Func<EventContext, CancellationToken, UniTask> eventFunc, TagInfo tagInfo)
+        public void Initialize(Func<EventContext, CancellationToken, AwaitableType> eventFunc, TagInfo tagInfo)
         {
             _eventFunc = eventFunc;
             _tagInfo = tagInfo;
             _context = new EventContext(tagInfo);
         }
 
-#if TEXTEFFECTS_UNITASK_SUPPORT
-        public async UniTask ExecuteAsync(CancellationToken cancellationToken = default)
-#else
-        public async Task ExecuteAsync(CancellationToken cancellationToken = default)
-#endif
+        public async AwaitableType ExecuteAsync(CancellationToken cancellationToken = default)
         {
             if (_eventFunc != null)
             {

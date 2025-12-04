@@ -9,9 +9,9 @@ using UnityEngine;
 using TextEffects.Effects.Typewriter.ScriptTags;
 
 #if TEXTEFFECTS_UNITASK_SUPPORT
-using Cysharp.Threading.Tasks;
+using AwaitableType = Cysharp.Threading.Tasks.UniTask;
 #else
-using System.Threading.Tasks;
+using AwaitableType = System.Threading.Tasks.ValueTask;
 #endif
 
 namespace TextEffects.Effects.Typewriter
@@ -26,11 +26,7 @@ namespace TextEffects.Effects.Typewriter
         [SerializeField] private float _defaultDelay = 0.01f;
         private AutoPlayEffect _autoPlayEffect;
         private DefaultDelayScriptModifier _defaultDelayScriptModifier;
-#if TEXTEFFECTS_UNITASK_SUPPORT
-        private Dictionary<string, Func<EventContext, CancellationToken, UniTask>> _eventTagHandler;
-#else
-        private Dictionary<string, Func<EventContext, CancellationToken, Task>> _eventTagHandler;
-#endif
+        private Dictionary<string, Func<EventContext, CancellationToken, AwaitableType>> _eventTagHandler;
         private TypewriterEffect _typewriterEffect;
         private ScriptTagFactoryMap _scriptTagFactoryMap;
         private DisplayTagFactoryMap _displayTagFactoryMap;
@@ -140,11 +136,7 @@ namespace TextEffects.Effects.Typewriter
             _scriptTagFactoryMap.UnregisterFactory(tagName);
         }
 
-#if TEXTEFFECTS_UNITASK_SUPPORT
-        public void RegisterEventTagHandler(string tagName, Func<EventContext, CancellationToken, UniTask> handler)
-#else
-        public void RegisterEventTagHandler(string tagName, Func<EventContext, CancellationToken, Task> handler)
-#endif
+        public void RegisterEventTagHandler(string tagName, Func<EventContext, CancellationToken, AwaitableType> handler)
         {
             InitializeIfNeeded();
             _eventTagHandler[tagName] = handler;
@@ -217,11 +209,7 @@ namespace TextEffects.Effects.Typewriter
             _typewriterEffect.RemoveListener(listener);
         }
 
-#if TEXTEFFECTS_UNITASK_SUPPORT
-        private async UniTask InvokeEventTagHandlerAsync(EventContext eventContext, CancellationToken cancellationToken)
-#else
-        private async Task InvokeEventTagHandlerAsync(EventContext eventContext, CancellationToken cancellationToken)
-#endif
+        private async AwaitableType InvokeEventTagHandlerAsync(EventContext eventContext, CancellationToken cancellationToken)
         {
             if (_eventTagHandler != null && _eventTagHandler.TryGetValue(eventContext.TagInfo.GetString(""), out var handler))
             {
@@ -253,11 +241,8 @@ namespace TextEffects.Effects.Typewriter
             _typewriterEffect.AddModifier(new DelayTagScriptModifier());
         }
 
-#if TEXTEFFECTS_UNITASK_SUPPORT
-        public async UniTask PlayScriptAsync(CancellationToken cancellationToken = default)
-#else
-        public async Task PlayScriptAsync(CancellationToken cancellationToken = default)
-#endif
+
+        public async AwaitableType PlayScriptAsync(CancellationToken cancellationToken = default)
         {
             if (!isActiveAndEnabled)
                 return;
@@ -265,11 +250,7 @@ namespace TextEffects.Effects.Typewriter
             await _typewriterEffect.PlayScriptAsync(cancellationToken);
         }
 
-#if TEXTEFFECTS_UNITASK_SUPPORT
-        public async UniTask PlayAsync(string text, CancellationToken cancellationToken = default)
-#else
-        public async Task PlayAsync(string text, CancellationToken cancellationToken = default)
-#endif
+        public async AwaitableType PlayAsync(string text, CancellationToken cancellationToken = default)
         {
             if (!isActiveAndEnabled)
                 return;
