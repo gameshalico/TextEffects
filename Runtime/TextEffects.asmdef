@@ -17,6 +17,11 @@
             "name": "com.cysharp.unitask",
             "expression": "",
             "define": "TEXTEFFECTS_UNITASK_SUPPORT"
+        },
+        {
+            "name": "com.unity.modules.uielements",
+            "expression": "1.0.0",
+            "define": "TEXTEFFECTS_UIELEMENTS_SUPPORT"
         }
     ],
     "noEngineReferences": false

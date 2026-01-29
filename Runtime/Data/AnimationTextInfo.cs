@@ -1,6 +1,4 @@
-﻿using TMPro;
-
-namespace TextEffects.Data
+﻿namespace TextEffects.Data
 {
     public struct AnimationTextInfo
     {
